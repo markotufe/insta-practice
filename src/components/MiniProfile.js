@@ -1,4 +1,8 @@
+import { useSelector } from "react-redux";
+
 const MiniProfile = () => {
+  const { displayName } = useSelector((state) => state.user.userData);
+
   return (
     <div className="flex items-center justify-between mt-14 ml-10">
       <img
@@ -10,7 +14,7 @@ const MiniProfile = () => {
       />
 
       <div className="flex-1 mx-4">
-        <h2 className="font-bold">markotufe</h2>
+        <h2 className="font-bold">{displayName}</h2>
         <h3 className="text-sm text-gray-400">Welcome to Instagram</h3>
       </div>
     </div>

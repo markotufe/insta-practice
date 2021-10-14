@@ -48,7 +48,6 @@ const LoginScreen = () => {
           email: createdUser?.user?.email,
           following: [],
           followers: [],
-          lastLogin: createdUser?.user.metadata?.lastSignInTime,
           registeredAt: createdUser?.user.metadata?.creationTime,
           userId: createdUser?.user?.uid,
         };

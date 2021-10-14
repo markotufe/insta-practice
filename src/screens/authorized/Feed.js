@@ -1,4 +1,4 @@
-// import Posts from "./Posts";
+// import Posts from "../../components/Post";
 import Stories from "../../components/Stories";
 import MiniProfile from "../../components/MiniProfile";
 import Suggestions from "../../components/Suggestions";

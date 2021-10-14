@@ -6,6 +6,7 @@ import { setUser, setIsRegistered } from "./redux/slices/userSlice";
 import { useDispatch } from "react-redux";
 import { db } from "./firebase";
 import Loader from "./components/Loader";
+import moment from "moment";
 
 function App() {
   const [loading, setLoading] = useState(true);
@@ -21,8 +22,10 @@ function App() {
 
         const results = snapshot.docs.map((doc) => ({
           ...doc.data(),
-          id: doc.id,
+          documentId: doc.id,
+          lastLogin: moment().fromNow(),
         }));
+
         dispatch(setUser(results[0]));
         dispatch(setIsRegistered(true));
         setLoading(false);
