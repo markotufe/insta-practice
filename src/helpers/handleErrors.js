@@ -11,6 +11,10 @@ export const handleErrors = (error) => {
       msg = "Please enter valid credentials";
       break;
 
+    case `${firebaseError} (auth/email-already-in-use).`:
+      msg = "Email address is already taken";
+      break;
+
     default:
       msg = "";
       break;

@@ -13,6 +13,7 @@ import unautorized from "./unauthorized";
 
 function RoutesContainer() {
   const isLoggedIn = useSelector((state) => state.user?.userData?.userId);
+  const isRegistered = useSelector((state) => state.user?.isRegistered);
 
   const renderUnautorizedRoutes = () => {
     return unautorized.map((route, index) => {
@@ -49,7 +50,9 @@ function RoutesContainer() {
   return (
     <Router>
       <Switch>
-        {!isLoggedIn ? renderUnautorizedRoutes() : renderAutorizedRoutes()}
+        {!isLoggedIn || !isRegistered
+          ? renderUnautorizedRoutes()
+          : renderAutorizedRoutes()}
         <Redirect from="*" to="/" />
       </Switch>
     </Router>

@@ -6,30 +6,32 @@ import { Link } from "react-router-dom";
 import ErrorMessage from "../../components/ErrorMessage";
 import { handleErrors } from "../../helpers/handleErrors";
 import { useSelector } from "react-redux";
+import { useHistory } from "react-router";
 
 const LoginScreen = () => {
   const auth = getAuth();
   const dispatch = useDispatch();
+  const history = useHistory();
 
   const [emailAddress, setEmailAddress] = useState("");
   const [password, setPassword] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const { userError } = useSelector((state) => state.user);
-  const isButtonDisabled = !emailAddress || password.length < 4;
+  const isButtonDisabled = !emailAddress || password.length < 6;
 
   const errorMessage = handleErrors(userError);
 
   //registration
   const handleSubmit = async (e) => {
     e.preventDefault();
-    setIsLoading(true);
     try {
+      setIsLoading(true);
       await signInWithEmailAndPassword(auth, emailAddress, password);
+      history.push("/");
     } catch (error) {
-      console.log(error?.message);
+      setIsLoading(false);
       dispatch(setUserError(error?.message));
     }
-    setIsLoading(false);
   };
 
   return (
@@ -41,15 +43,15 @@ const LoginScreen = () => {
         <div className="mb-4 mt-4">
           <label
             className="block text-grey-darker text-sm font-bold mb-2"
-            htmlFor="username"
+            htmlFor="email"
           >
-            Username
+            Email address
           </label>
           <input
             className="shadow appearance-none border rounded w-full py-2 px-3 text-grey-darker"
-            id="username"
-            type="text"
-            placeholder="Enter username"
+            id="email"
+            type="email"
+            placeholder="Enter email address"
             value={emailAddress}
             onChange={(e) => setEmailAddress(e.target.value)}
           />

@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import RoutesContainer from "./routes/";
 import { getAuth, onAuthStateChanged } from "firebase/auth";
 import { collection, query, where, getDocs } from "firebase/firestore";
-import { setUser } from "./redux/slices/userSlice";
+import { setUser, setIsRegistered } from "./redux/slices/userSlice";
 import { useDispatch } from "react-redux";
 import { db } from "./firebase";
 import Loader from "./components/Loader";
@@ -24,6 +24,7 @@ function App() {
           id: doc.id,
         }));
         dispatch(setUser(results[0]));
+        dispatch(setIsRegistered(true));
         setLoading(false);
       } else {
         dispatch(setUser({}));
