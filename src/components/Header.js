@@ -1,4 +1,3 @@
-import Image from "next/image";
 import {
   SearchIcon,
   PlusCircleIcon,
@@ -8,40 +7,24 @@ import {
   MenuIcon,
 } from "@heroicons/react/outline";
 import { HomeIcon } from "@heroicons/react/solid";
-import { signIn, signOut, useSession } from "next-auth/react";
-import { useRouter } from "next/router";
-import { useRecoilState } from "recoil";
-import { modalState } from "../atoms/modalAtom";
-
-//fill da zauzme koliko god moze mesta na ekranu u containeru na kom se nalazi
-//Image kompresuje slike u webp format
 
 function Header() {
-  const { data: session } = useSession();
-  const [isOpen, setIsOpen] = useRecoilState(modalState);
-  // const open = useRecoilValue(modalState) ovo je read-only
-  const router = useRouter();
-
   return (
     <div className="shadow-sm border-b bg-white sticky top-0 z-50">
       <div className="flex justify-between max-w-6xl mx-5 lg:mx-auto">
         {/* left */}
-        <div
-          className="relative hidden lg:inline-grid w-24 cursor-pointer"
-          onClick={() => router.push("/")}
-        >
-          <Image
-            src="https://links.papareact.com/ocw"
-            layout="fill"
-            objectFit="contain"
+        <div className="relative hidden lg:inline-grid w-24 cursor-pointer items-center">
+          <img
+            alt="logo"
+            className="object-cover"
+            src="https://upload.wikimedia.org/wikipedia/commons/thumb/2/2a/Instagram_logo.svg/2880px-Instagram_logo.svg.png"
           />
         </div>
 
         <div className="relative w-10 lg:hidden flex-shrink-0 cursor-pointer">
-          <Image
-            src="https://links.papareact.com/jjm"
-            layout="fill"
-            objectFit="contain"
+          <img
+            alt="profile"
+            src="https://1000logos.net/wp-content/uploads/2017/02/insta-logo.png"
           />
         </div>
         {/* middle search input filed */}
@@ -64,34 +47,26 @@ function Header() {
 
         {/* right */}
         <div className="flex items-center justify-end space-x-4">
-          <HomeIcon className="navBtn" onClick={() => router.push("/")} />
+          <HomeIcon className="navBtn" />
           <MenuIcon className="h-6 md:hidden cursor-pointer" />
 
-          {session ? (
-            <>
-              <div className="relative navBtn">
-                <PaperAirplaneIcon className="navBtn" />
-                <div className="absolute -top-1 -right-1 text-xs w-5 h-5 bg-red-500 rounded-full flex items-center justify-center animate-pulse text-white">
-                  3
-                </div>
-              </div>
-              <PlusCircleIcon
-                className="navBtn"
-                onClick={() => setIsOpen(true)}
-              />
-              <UserGroupIcon className="navBtn" />
-              <HeartIcon className="navBtn" />
+          <div className="relative navBtn">
+            <PaperAirplaneIcon className="navBtn" />
+            <div className="absolute -top-1 -right-1 text-xs w-5 h-5 bg-red-500 rounded-full flex items-center justify-center animate-pulse text-white">
+              3
+            </div>
+          </div>
+          <PlusCircleIcon className="navBtn" />
+          <UserGroupIcon className="navBtn" />
+          <HeartIcon className="navBtn" />
 
-              <img
-                onClick={signOut}
-                src={session?.user?.image}
-                alt="profile pic"
-                className="h-10 w-10 rounded-full cursor-pointer"
-              />
-            </>
-          ) : (
-            <button onClick={signIn}>Sign In</button>
-          )}
+          <img
+            src={
+              "https://i2.wp.com/www.stazeibogaze.info/wp-content/uploads/2016/08/default-placeholder.png?fit=1200%2C1200&w=640"
+            }
+            alt="profile pic"
+            className="h-10 w-10 rounded-full cursor-pointer"
+          />
         </div>
       </div>
     </div>

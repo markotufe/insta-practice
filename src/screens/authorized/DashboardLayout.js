@@ -1,5 +1,12 @@
+import Header from "../../components/Header";
+
 const DashboardLayout = ({ children }) => {
-  return <div>{children}</div>;
+  return (
+    <>
+      <Header />
+      {children}
+    </>
+  );
 };
 
 export default DashboardLayout;
