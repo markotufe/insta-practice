@@ -11,7 +11,7 @@ function App() {
   const dispatch = useDispatch();
 
   useEffect(() => {
-    onAuthStateChanged(auth, async (user) => {
+    const unsub = onAuthStateChanged(auth, async (user) => {
       if (user) {
         const collectionRef = collection(db, "users");
         const q = query(collectionRef, where("userId", "==", user?.uid));
@@ -26,6 +26,8 @@ function App() {
         dispatch(setUser({}));
       }
     });
+
+    return () => unsub();
   }, [auth, dispatch]);
 
   return <RoutesContainer />;
