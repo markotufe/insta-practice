@@ -4,6 +4,8 @@ import { useDispatch } from "react-redux";
 import { setUserError } from "../../redux/slices/userSlice";
 import { Link } from "react-router-dom";
 import ErrorMessage from "../../components/ErrorMessage";
+import { handleErrors } from "../../helpers/handleErrors";
+import { useSelector } from "react-redux";
 
 const LoginScreen = () => {
   const auth = getAuth();
@@ -11,17 +13,23 @@ const LoginScreen = () => {
 
   const [emailAddress, setEmailAddress] = useState("");
   const [password, setPassword] = useState("");
-  const isButtonDisabled = !emailAddress || !password.length > 6;
+  const [isLoading, setIsLoading] = useState(false);
+  const { userError } = useSelector((state) => state.user);
+  const isButtonDisabled = !emailAddress || password.length < 4;
+
+  const errorMessage = handleErrors(userError);
 
   //registration
   const handleSubmit = async (e) => {
     e.preventDefault();
-
+    setIsLoading(true);
     try {
       await signInWithEmailAndPassword(auth, emailAddress, password);
     } catch (error) {
+      console.log(error?.message);
       dispatch(setUserError(error?.message));
     }
+    setIsLoading(false);
   };
 
   return (
@@ -66,14 +74,14 @@ const LoginScreen = () => {
           <span className="text-gray-800">Don't have an account?</span> Sign up
         </Link>
 
-        <ErrorMessage error="Please try again" />
+        <ErrorMessage error={errorMessage} />
 
         <button
           disabled={isButtonDisabled}
           type="submit"
           className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded disabled:cursor-not-allowed disabled:opacity-50 mt-4"
         >
-          Sign in
+          {isLoading ? "Signing in" : "Sign in"}
         </button>
       </form>
     </div>
