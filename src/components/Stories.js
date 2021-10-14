@@ -1,11 +1,9 @@
 import faker from "faker";
 import { useEffect, useState } from "react";
 import Story from "./Story";
-import { useSession } from "next-auth/react";
 
 function Stories() {
   const [suggestions, setSuggestions] = useState([]);
-  const { data: session } = useSession();
 
   useEffect(() => {
     const suggestions = [...Array(20)].map((_, index) => {
@@ -19,7 +17,12 @@ function Stories() {
 
   return (
     <div className="flex space-x-2 p-6 bg-white mt-8 border rounded-sm border-gray-200 overflow-x-scroll scrollbar-thin scrollbar-thumb-black">
-      {session && <Story avatar={session.user.image} username={"Your story"} />}
+      <Story
+        avatar={
+          "https://i2.wp.com/www.stazeibogaze.info/wp-content/uploads/2016/08/default-placeholder.png?fit=1200%2C1200&w=640"
+        }
+        username={"You"}
+      />
 
       {suggestions.map((profile) => (
         <Story

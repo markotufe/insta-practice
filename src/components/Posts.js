@@ -8,15 +8,11 @@ import {
 } from "@firebase/firestore";
 import Post from "./Post";
 import { db } from "../firebase";
-import { useSession } from "next-auth/react";
 
 const Posts = () => {
   const [posts, setPosts] = useState([]);
 
-  const { data: session } = useSession();
-
   useEffect(() => {
-    //snapshot je real-time lisener na nasu bazu, prati promene
     const unsubscribe = onSnapshot(
       query(collection(db, "posts"), orderBy("timestamp", "desc")),
       (snapshot) => {
