@@ -15,6 +15,10 @@ export const handleErrors = (error) => {
       msg = "Email address is already taken";
       break;
 
+    case `taken`:
+      msg = "Username is already taken";
+      break;
+
     default:
       msg = "";
       break;

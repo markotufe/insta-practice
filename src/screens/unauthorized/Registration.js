@@ -9,6 +9,7 @@ import { useSelector } from "react-redux";
 import { collection, addDoc } from "firebase/firestore";
 import { db } from "../../firebase";
 import { useHistory } from "react-router";
+import { checkIfUsernameExist } from "../../helpers/checkUsername";
 
 const LoginScreen = () => {
   const auth = getAuth();
@@ -27,31 +28,38 @@ const LoginScreen = () => {
   //registration
   const handleSubmit = async (e) => {
     e.preventDefault();
-    try {
-      setIsLoading(true);
-      const createdUser = await createUserWithEmailAndPassword(
-        auth,
-        emailAddress,
-        password
-      );
+    const doesUsernameExist = await checkIfUsernameExist(username);
 
-      const collectionRef = collection(db, "users");
-      const payload = {
-        displayName: username,
-        email: createdUser?.user?.email,
-        following: [],
-        followers: [],
-        lastLogin: createdUser?.user.metadata?.lastSignInTime,
-        registeredAt: createdUser?.user.metadata?.creationTime,
-        userId: createdUser?.user?.uid,
-      };
-      await addDoc(collectionRef, payload);
-      dispatch(setIsRegistered(true));
-      dispatch(setUserError(""));
-      history.push("/");
-    } catch (error) {
-      dispatch(setUserError(error?.message));
-      setIsLoading(false);
+    if (doesUsernameExist) {
+      dispatch(setUserError("taken"));
+      setUsername("");
+    } else {
+      try {
+        setIsLoading(true);
+        const createdUser = await createUserWithEmailAndPassword(
+          auth,
+          emailAddress,
+          password
+        );
+
+        const collectionRef = collection(db, "users");
+        const payload = {
+          displayName: username,
+          email: createdUser?.user?.email,
+          following: [],
+          followers: [],
+          lastLogin: createdUser?.user.metadata?.lastSignInTime,
+          registeredAt: createdUser?.user.metadata?.creationTime,
+          userId: createdUser?.user?.uid,
+        };
+        await addDoc(collectionRef, payload);
+        dispatch(setIsRegistered(true));
+        dispatch(setUserError(""));
+        history.push("/");
+      } catch (error) {
+        dispatch(setUserError(error?.message));
+        setIsLoading(false);
+      }
     }
   };
 
@@ -71,7 +79,7 @@ const LoginScreen = () => {
           <input
             className="shadow appearance-none border rounded w-full py-2 px-3 text-grey-darker"
             id="username"
-            type="email"
+            type="text"
             placeholder="Enter username"
             value={username}
             onChange={(e) => setUsername(e.target.value)}
@@ -87,7 +95,7 @@ const LoginScreen = () => {
           <input
             className="shadow appearance-none border rounded w-full py-2 px-3 text-grey-darker"
             id="email"
-            type="text"
+            type="email"
             placeholder="Enter email address"
             value={emailAddress}
             onChange={(e) => setEmailAddress(e.target.value)}
