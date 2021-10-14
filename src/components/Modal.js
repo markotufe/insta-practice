@@ -19,7 +19,7 @@ export const Modal = () => {
   const captionRef = useRef(null);
   const [selectedFile, setSelectedFile] = useState(null);
   const [loading, setLoading] = useState(false);
-  const { displayName } = useSelector((state) => state.user.userData);
+  const { displayName, userId } = useSelector((state) => state.user.userData);
   const { isModalOpen } = useSelector((state) => state.modal);
   const dispatch = useDispatch();
 
@@ -35,7 +35,8 @@ export const Modal = () => {
 
     //dodajemo dokument na firestore, prvi argument je inicijalizovan firestore, drugi kolekcija gde ide dokument, a treci sta saljemo na server
     const docRef = await addDoc(collection(db, "posts"), {
-      displayName: displayName,
+      creatorId: userId,
+      creatorDisplayName: displayName,
       caption: captionRef?.current?.value,
       timestamp: serverTimestamp(), //da imamo istu timezonu
     });
@@ -53,6 +54,7 @@ export const Modal = () => {
         //azuriramo dodat dokument sa slikom, db je funkcija koja pokazuje na dokument unutar firestore-a, treci argument je sta zelimo da azuriramo
         await updateDoc(doc(db, "posts", docRef.id), {
           image: downloadUrl,
+          postId: docRef.id,
         });
       }
     );
