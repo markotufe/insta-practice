@@ -50,6 +50,7 @@ const LoginScreen = () => {
           followers: [],
           registeredAt: createdUser?.user.metadata?.creationTime,
           userId: createdUser?.user?.uid,
+          photoURL: null,
         };
         await addDoc(collectionRef, payload);
         dispatch(setIsRegistered(true));

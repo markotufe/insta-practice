@@ -19,7 +19,9 @@ export const Modal = () => {
   const captionRef = useRef(null);
   const [selectedFile, setSelectedFile] = useState(null);
   const [loading, setLoading] = useState(false);
-  const { displayName, userId } = useSelector((state) => state.user.userData);
+  const { displayName, userId, photoURL } = useSelector(
+    (state) => state.user.userData
+  );
   const { isModalOpen } = useSelector((state) => state.modal);
   const dispatch = useDispatch();
 
@@ -37,6 +39,7 @@ export const Modal = () => {
     const docRef = await addDoc(collection(db, "posts"), {
       creatorId: userId,
       creatorDisplayName: displayName,
+      photoURL: photoURL,
       caption: captionRef?.current?.value,
       timestamp: serverTimestamp(), //da imamo istu timezonu
     });
