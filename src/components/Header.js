@@ -8,7 +8,12 @@ import {
 } from "@heroicons/react/outline";
 import { HomeIcon } from "@heroicons/react/solid";
 
+import { setModal } from "../redux/slices/modalSlice";
+import { useDispatch } from "react-redux";
+
 function Header() {
+  const dispatch = useDispatch();
+
   return (
     <div className="shadow-sm border-b bg-white sticky top-0 z-50">
       <div className="flex justify-between max-w-6xl mx-5 lg:mx-auto">
@@ -56,7 +61,10 @@ function Header() {
               3
             </div>
           </div>
-          <PlusCircleIcon className="navBtn" />
+          <PlusCircleIcon
+            className="navBtn"
+            onClick={() => dispatch(setModal(true))}
+          />
           <UserGroupIcon className="navBtn" />
           <HeartIcon className="navBtn" />
 

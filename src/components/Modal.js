@@ -1,5 +1,3 @@
-import { useRecoilState } from "recoil";
-import { modalState } from "../atoms/modalAtom";
 import { Dialog, Transition } from "@headlessui/react";
 import { Fragment, useRef, useState } from "react";
 import { CameraIcon } from "@heroicons/react/outline";
@@ -11,16 +9,19 @@ import {
   serverTimestamp,
   updateDoc,
 } from "@firebase/firestore";
-import { useSession } from "next-auth/react";
 import { ref, getDownloadURL, uploadString } from "@firebase/storage";
+import { useSelector } from "react-redux";
+import { setModal } from "../redux/slices/modalSlice";
+import { useDispatch } from "react-redux";
 
 export const Modal = () => {
-  const { data: session } = useSession();
-  const [open, setOpen] = useRecoilState(modalState);
   const filePickerRef = useRef(null);
   const captionRef = useRef(null);
   const [selectedFile, setSelectedFile] = useState(null);
   const [loading, setLoading] = useState(false);
+  const { displayName } = useSelector((state) => state.user.userData);
+  const { isModalOpen } = useSelector((state) => state.modal);
+  const dispatch = useDispatch();
 
   const uploadPost = async () => {
     if (loading) return;
@@ -34,8 +35,7 @@ export const Modal = () => {
 
     //dodajemo dokument na firestore, prvi argument je inicijalizovan firestore, drugi kolekcija gde ide dokument, a treci sta saljemo na server
     const docRef = await addDoc(collection(db, "posts"), {
-      username: session.user?.username,
-      profileImg: session.user?.image,
+      displayName: displayName,
       caption: captionRef?.current?.value,
       timestamp: serverTimestamp(), //da imamo istu timezonu
     });
@@ -57,7 +57,7 @@ export const Modal = () => {
       }
     );
 
-    setOpen(false);
+    dispatch(setModal(false));
     setLoading(false);
     setSelectedFile(null);
 
@@ -78,11 +78,11 @@ export const Modal = () => {
   };
 
   return (
-    <Transition.Root show={open} as={Fragment}>
+    <Transition.Root show={isModalOpen} as={Fragment}>
       <Dialog
         as="div"
         className="fixed z-10 inset-0 overflow-y-auto"
-        onClose={() => setOpen(false)}
+        onClose={() => dispatch(setModal(false))}
       >
         <div className="flex items-end justify-center min-h-[800px] sm:min-h-screen pt-4 px-4 pb-20 text-center sm:block sm:p-0">
           <Transition.Child
@@ -143,7 +143,6 @@ export const Modal = () => {
                   </div>
                   <div>
                     <input
-                      type="text"
                       type="file"
                       hidden
                       ref={filePickerRef}
