@@ -3,6 +3,7 @@ import { onSnapshot, collection, query, where } from "@firebase/firestore";
 import Post from "./Post";
 import { db } from "../firebase";
 import { useSelector } from "react-redux";
+import NoPostsMessage from "./NoPostsMessage";
 
 const Posts = () => {
   const [posts, setPosts] = useState([]);
@@ -23,9 +24,11 @@ const Posts = () => {
 
   return (
     <div>
-      {posts.map((post) => (
-        <Post post={post} />
-      ))}
+      {!posts.length ? (
+        <NoPostsMessage />
+      ) : (
+        posts.map((post) => <Post key={post?.postId} post={post} />)
+      )}
     </div>
   );
 };

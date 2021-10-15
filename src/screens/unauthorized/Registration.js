@@ -21,7 +21,8 @@ const LoginScreen = () => {
   const [password, setPassword] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const { userError } = useSelector((state) => state.user);
-  const isButtonDisabled = !emailAddress || password.length < 6 || !username;
+  const isButtonDisabled =
+    !emailAddress || password.length < 6 || !username || isLoading;
 
   const errorMessage = handleErrors(userError);
 
