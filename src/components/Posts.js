@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import { onSnapshot, collection, query, where } from "@firebase/firestore";
-// import Post from "./Post";
+import Post from "./Post";
 import { db } from "../firebase";
 import { useSelector } from "react-redux";
 
@@ -21,20 +21,11 @@ const Posts = () => {
     return unsubscribe;
   }, [following]);
 
-  console.log(posts);
-
   return (
     <div>
-      {/* {posts.map((post) => (
-        <Post
-          key={post.id}
-          id={post.id}
-          username={post.username}
-          userImg={post.profileImg}
-          img={post.image}
-          caption={post.caption}
-        />
-      ))} */}
+      {posts.map((post) => (
+        <Post post={post} />
+      ))}
     </div>
   );
 };

@@ -19,7 +19,6 @@ import {
   deleteDoc,
 } from "@firebase/firestore";
 import { db } from "../firebase";
-import { useSession } from "next-auth/react";
 import Moment from "react-moment";
 import {
   HeartIcon as HeartIconFilled,
@@ -28,8 +27,9 @@ import {
 
 import "emoji-mart/css/emoji-mart.css";
 import { Picker } from "emoji-mart";
+import { useSelector } from "react-redux";
 
-const Post = ({ id, username, caption, img, userImg }) => {
+const Post = ({ post }) => {
   const [comment, setComment] = useState("");
   const [comments, setComments] = useState([]);
   const [likes, setLikes] = useState([]);
@@ -38,31 +38,15 @@ const Post = ({ id, username, caption, img, userImg }) => {
   const [hasBookmarked, setHasBookmarked] = useState(false);
   const [isEmojiPickerVisible, setIsEmojiPickerVisible] = useState(false);
   const commentInputRef = useRef(null);
+  const { displayName, photoURL, userId } = useSelector(
+    (state) => state.user.userData
+  );
 
-  const { data: session } = useSession();
-
-  const sendComment = async (e) => {
-    e.preventDefault();
-
-    const commentToSend = comment;
-    setComment("");
-
-    //id posta koji zelimo da komentarisemo
-    //comments je kolekcija koja se nalazi unutar posta
-    await addDoc(collection(db, "posts", id, "comments"), {
-      comment: commentToSend,
-      username: session.user.username,
-      profileImg: session.user?.image,
-      timestamp: serverTimestamp(),
-    });
-  };
-
+  //uzimamo sve komentare za post
   useEffect(() => {
-    //snapshot je real-time lisener na nasu bazu, prati promene
-    //id je id posta
     const unsubscribe = onSnapshot(
       query(
-        collection(db, "posts", id, "comments"),
+        collection(db, "posts", post?.postId, "comments"),
         orderBy("timestamp", "desc")
       ),
       (snapshot) => {
@@ -72,76 +56,99 @@ const Post = ({ id, username, caption, img, userImg }) => {
       }
     );
     return unsubscribe;
-  }, [db, id]);
+  }, [post?.postId]);
 
+  //uzimamo sve lajkove za post
   useEffect(() => {
     const unsubscribe = onSnapshot(
-      query(collection(db, "posts", id, "likes")),
+      query(collection(db, "posts", post?.postId, "likes")),
       (snapshot) => {
-        setLikes(snapshot.docs.map((doc) => ({ ...doc.data(), id: doc.id })));
-      }
-    );
-    return unsubscribe;
-  }, [db, id]);
-
-  useEffect(() => {
-    // -1 ako nista ne nadje
-    setHasLiked(
-      likes.findIndex((like) => like.id === session?.user?.uid) !== -1
-    );
-  }, [likes]);
-
-  useEffect(() => {
-    const unsubscribe = onSnapshot(
-      query(collection(db, "posts", id, "bookmarks")),
-      (snapshot) => {
-        setBookmarks(
-          snapshot.docs.map((doc) => ({ ...doc.data(), id: doc.id }))
+        setLikes(
+          snapshot.docs.map((doc) => ({ ...doc.data(), documentId: doc.id }))
         );
       }
     );
     return unsubscribe;
-  }, [db, id]);
+  }, [post?.postId]);
+
+  //proveravamo da li je ulogovan korisnik lajkovao post
+  useEffect(() => {
+    // -1 ako nista ne nadje
+    setHasLiked(likes.findIndex((like) => like?.creatorId === userId) !== -1);
+  }, [likes, userId]);
+
+  //uzimamo sve postove koji imaju bookmark
+  useEffect(() => {
+    const unsubscribe = onSnapshot(
+      query(collection(db, "posts", post?.postId, "bookmarks")),
+      (snapshot) => {
+        setBookmarks(
+          snapshot.docs.map((doc) => ({ ...doc.data(), documentId: doc?.id }))
+        );
+      }
+    );
+    return unsubscribe;
+  }, [post?.postId]);
 
   useEffect(() => {
     // -1 ako nista ne nadje
     setHasBookmarked(
-      bookmarks.findIndex((bookmark) => bookmark.id === session?.user?.uid) !==
-        -1
+      bookmarks.findIndex((bookmark) => bookmark?.creatorId === userId) !== -1
     );
-  }, [bookmarks]);
+  }, [bookmarks, userId]);
+
+  const sendComment = async (e) => {
+    e.preventDefault();
+
+    const commentToSend = comment;
+    setComment("");
+
+    //id posta koji zelimo da komentarisemo
+    //comments je kolekcija koja se nalazi unutar posta
+    await addDoc(collection(db, "posts", post?.postId, "comments"), {
+      comment: commentToSend,
+      creatorDisplayName: displayName,
+      creatorId: userId,
+      creatorPhotoUrl: photoURL,
+      timestamp: serverTimestamp(),
+    });
+  };
 
   const likeUnlikePost = async () => {
     //koristi se korisnikov ID kao ID dokumenta za lajk, zato nam je to peti argument. Zasto? Pa zato da bismo bili sigurni da ne mogu biti dva lajka istog korisnika na isti post.
     if (hasLiked) {
-      await deleteDoc(doc(db, "posts", id, "likes", session.user?.uid));
+      await deleteDoc(doc(db, "posts", post?.postId, "likes", userId));
     } else {
-      await setDoc(doc(db, "posts", id, "likes", session.user?.uid), {
-        username: session?.user?.username,
+      await setDoc(doc(db, "posts", post?.postId, "likes", userId), {
+        creatorDisplayName: displayName,
+        creatorId: userId,
+        creatorPhotoUrl: photoURL,
       });
     }
   };
 
   const deletePost = async () => {
-    await deleteDoc(doc(db, "posts", id));
+    await deleteDoc(doc(db, "posts", post?.postId));
   };
 
   const deleteComment = async (commentId) => {
-    await deleteDoc(doc(db, "posts", id, "comments", commentId));
+    await deleteDoc(doc(db, "posts", post?.postId, "comments", commentId));
   };
 
   const manageBookmark = async () => {
     if (hasBookmarked) {
-      await deleteDoc(doc(db, "posts", id, "bookmarks", session.user?.uid));
+      await deleteDoc(doc(db, "posts", post?.postId, "bookmarks", userId));
     } else {
-      await setDoc(doc(db, "posts", id, "bookmarks", session.user?.uid), {
-        username: session?.user?.username,
+      await setDoc(doc(db, "posts", post?.postId, "bookmarks", userId), {
+        creatorDisplayName: displayName,
+        creatorId: userId,
+        creatorPhotoUrl: photoURL,
       });
     }
   };
 
   const renderBookmark = () => {
-    if (session.user.username !== username) {
+    if (userId !== post?.creatorId) {
       if (!hasBookmarked) {
         return <BookmarkIcon className="postBtn" onClick={manageBookmark} />;
       } else {
@@ -157,17 +164,20 @@ const Post = ({ id, username, caption, img, userImg }) => {
       {/* Header */}
       <div className="flex items-center p-5">
         <img
-          src={userImg}
+          src={
+            post?.photoURL ??
+            "https://i2.wp.com/www.stazeibogaze.info/wp-content/uploads/2016/08/default-placeholder.png?fit=1200%2C1200&w=640"
+          }
           alt="user"
           className="rounded-full h-12 w-12 object-contain p-1 mr-3 border"
         />
-        <p className="flex-1 font-bold">{username}</p>
-        {session.user.username === username && (
+        <p className="flex-1 font-bold">{post?.creatorDisplayName}</p>
+        {userId === post?.creatorId && (
           <TrashIcon className="h-5 cursor-pointer" onClick={deletePost} />
         )}
       </div>
       {/* img  */}
-      <img src={img} alt="post" className="object-cover w-full" />
+      <img src={post?.image} alt="post" className="object-cover w-full" />
       {/* buttons */}
       <div className="flex justify-between px-4 pt-4">
         <div className="flex space-x-4">
@@ -193,9 +203,10 @@ const Post = ({ id, username, caption, img, userImg }) => {
         {likes.length > 0 ? (
           <span className="font-bold mb-1 block">{likes.length} likes</span>
         ) : (
-          <span className="font-bold mb-1">0 likes</span>
+          <span className="font-bold mb-1 block">0 likes</span>
         )}
-        <span className="font-bold mr-1">{username}</span> {caption}
+        <span className="font-bold mr-1">{post?.creatorDisplayName}</span>{" "}
+        {post?.caption}
       </p>
 
       {/* comments */}
@@ -208,15 +219,20 @@ const Post = ({ id, username, caption, img, userImg }) => {
                 className="flex items-center space-x-2 mb-3"
               >
                 <img
-                  src={comment.profileImg}
+                  src={
+                    comment.creatorPhotoUrl ??
+                    "https://i2.wp.com/www.stazeibogaze.info/wp-content/uploads/2016/08/default-placeholder.png?fit=1200%2C1200&w=640"
+                  }
                   alt="auhtor"
                   className="h-7 rounded-full"
                 />
                 <p className="text-sm flex-1 flex items-center">
-                  <span className="font-bold mr-[5px]">{comment.username}</span>
+                  <span className="font-bold mr-[5px]">
+                    {comment.creatorDisplayName}
+                  </span>
                   {comment.comment}
-                  {(session.user.username === comment.username ||
-                    session.user.username === username) && (
+                  {(userId === comment.creatorId ||
+                    userId === post?.creatorId) && (
                     <TrashIcon
                       onClick={() => deleteComment(comment.id)}
                       className="ml-3 h-4 cursor-pointer"
