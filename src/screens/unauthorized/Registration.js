@@ -1,17 +1,17 @@
 import { useState } from "react";
 import { createUserWithEmailAndPassword, getAuth } from "firebase/auth";
 import { useDispatch } from "react-redux";
-import { setUserError, setIsRegistered } from "../../redux/slices/userSlice";
+import { setIsRegistered } from "../../redux/slices/userSlice";
 import { Link } from "react-router-dom";
 import ErrorMessage from "../../components/ErrorMessage";
-import { handleErrors } from "../../helpers/handleErrors";
 import { useSelector } from "react-redux";
 import { collection, addDoc } from "firebase/firestore";
 import { db } from "../../firebase";
 import { useHistory } from "react-router";
 import { checkIfUsernameExist } from "../../helpers/checkUsername";
+import { setErrorMessage } from "../../redux/slices/errorsSlice";
 
-const LoginScreen = () => {
+const LoginScreen = (props) => {
   const auth = getAuth();
   const dispatch = useDispatch();
   const history = useHistory();
@@ -20,11 +20,9 @@ const LoginScreen = () => {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const [isLoading, setIsLoading] = useState(false);
-  const { userError } = useSelector((state) => state.user);
+  const { errorMessage } = useSelector((state) => state.errors);
   const isButtonDisabled =
     !emailAddress || password.length < 6 || !username || isLoading;
-
-  const errorMessage = handleErrors(userError);
 
   //registration
   const handleSubmit = async (e) => {
@@ -32,7 +30,7 @@ const LoginScreen = () => {
     const doesUsernameExist = await checkIfUsernameExist(username);
 
     if (doesUsernameExist) {
-      dispatch(setUserError("taken"));
+      dispatch(setErrorMessage("taken"));
       setUsername("");
     } else {
       try {
@@ -55,10 +53,10 @@ const LoginScreen = () => {
         };
         await addDoc(collectionRef, payload);
         dispatch(setIsRegistered(true));
-        dispatch(setUserError(""));
+        dispatch(setErrorMessage(""));
         history.push("/");
       } catch (error) {
-        dispatch(setUserError(error?.message));
+        dispatch(setErrorMessage(error?.message));
         setIsLoading(false);
       }
     }
@@ -118,7 +116,11 @@ const LoginScreen = () => {
             onChange={(e) => setPassword(e.target.value)}
           />
         </div>
-        <Link className="text-blue-400 text-sm text-right" to="/">
+        <Link
+          onClick={() => dispatch(setErrorMessage(""))}
+          className="text-blue-400 text-sm text-right"
+          to="/"
+        >
           <span className="text-gray-800">Have an account?</span> Sign in
         </Link>
 

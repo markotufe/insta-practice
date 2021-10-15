@@ -1,14 +1,13 @@
 import { useState } from "react";
 import { signInWithEmailAndPassword, getAuth } from "firebase/auth";
 import { useDispatch } from "react-redux";
-import { setUserError } from "../../redux/slices/userSlice";
+import { setErrorMessage } from "../../redux/slices/errorsSlice";
 import { Link } from "react-router-dom";
 import ErrorMessage from "../../components/ErrorMessage";
-import { handleErrors } from "../../helpers/handleErrors";
 import { useSelector } from "react-redux";
 import { useHistory } from "react-router";
 
-const LoginScreen = () => {
+const LoginScreen = (props) => {
   const auth = getAuth();
   const dispatch = useDispatch();
   const history = useHistory();
@@ -16,10 +15,8 @@ const LoginScreen = () => {
   const [emailAddress, setEmailAddress] = useState("");
   const [password, setPassword] = useState("");
   const [isLoading, setIsLoading] = useState(false);
-  const { userError } = useSelector((state) => state.user);
-  const isButtonDisabled = !emailAddress || password.length < 6 || !isLoading;
-
-  const errorMessage = handleErrors(userError);
+  const { errorMessage } = useSelector((state) => state.errors);
+  const isButtonDisabled = !emailAddress || password.length < 6 || isLoading;
 
   //registration
   const handleSubmit = async (e) => {
@@ -30,7 +27,7 @@ const LoginScreen = () => {
       history.push("/");
     } catch (error) {
       setIsLoading(false);
-      dispatch(setUserError(error?.message));
+      dispatch(setErrorMessage(error?.message));
     }
   };
 
@@ -72,7 +69,11 @@ const LoginScreen = () => {
             onChange={(e) => setPassword(e.target.value)}
           />
         </div>
-        <Link className="text-blue-400 text-sm text-right" to="/register">
+        <Link
+          onClick={() => dispatch(setErrorMessage(""))}
+          className="text-blue-400 text-sm text-right"
+          to="/register"
+        >
           <span className="text-gray-800">Don't have an account?</span> Sign up
         </Link>
 

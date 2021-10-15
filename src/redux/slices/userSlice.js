@@ -5,14 +5,10 @@ const userSlice = createSlice({
   initialState: {
     userData: {},
     isRegistered: false,
-    userError: "",
   },
   reducers: {
     setUser(state, action) {
       state.userData = action.payload;
-    },
-    setUserError(state, action) {
-      state.userError = action.payload;
     },
     setIsRegistered(state, action) {
       state.isRegistered = action.payload;
@@ -20,6 +16,6 @@ const userSlice = createSlice({
   },
 });
 
-export const { setUser, setUserError, setIsRegistered } = userSlice.actions;
+export const { setUser, setIsRegistered } = userSlice.actions;
 
 export default userSlice.reducer;
