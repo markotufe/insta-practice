@@ -10,10 +10,13 @@ import { HomeIcon } from "@heroicons/react/solid";
 import { useHistory } from "react-router";
 import { setModal } from "../redux/slices/modalSlice";
 import { useDispatch } from "react-redux";
+import { Link } from "react-router-dom";
+import { useSelector } from "react-redux";
 
 function Header() {
   const dispatch = useDispatch();
   const history = useHistory();
+  const { displayName } = useSelector((state) => state.user.userData);
 
   return (
     <div className="shadow-sm border-b bg-white sticky top-0 z-50">
@@ -72,16 +75,20 @@ function Header() {
             className="navBtn"
             onClick={() => dispatch(setModal(true))}
           />
-          <UserGroupIcon className="navBtn" />
+          <Link to="/explore">
+            <UserGroupIcon className="navBtn" />
+          </Link>
           <HeartIcon className="navBtn" />
 
-          <img
-            src={
-              "https://i2.wp.com/www.stazeibogaze.info/wp-content/uploads/2016/08/default-placeholder.png?fit=1200%2C1200&w=640"
-            }
-            alt="profile pic"
-            className="h-10 w-10 rounded-full cursor-pointer"
-          />
+          <Link to={`/profile/${displayName}`}>
+            <img
+              src={
+                "https://i2.wp.com/www.stazeibogaze.info/wp-content/uploads/2016/08/default-placeholder.png?fit=1200%2C1200&w=640"
+              }
+              alt="profile pic"
+              className="h-10 w-10 rounded-full cursor-pointer"
+            />
+          </Link>
         </div>
       </div>
     </div>
