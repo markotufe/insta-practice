@@ -7,18 +7,22 @@ import {
   MenuIcon,
 } from "@heroicons/react/outline";
 import { HomeIcon } from "@heroicons/react/solid";
-
+import { useHistory } from "react-router";
 import { setModal } from "../redux/slices/modalSlice";
 import { useDispatch } from "react-redux";
 
 function Header() {
   const dispatch = useDispatch();
+  const history = useHistory();
 
   return (
     <div className="shadow-sm border-b bg-white sticky top-0 z-50">
       <div className="flex justify-between max-w-6xl mx-5 lg:mx-auto">
         {/* left */}
-        <div className="relative hidden lg:inline-grid w-24 cursor-pointer items-center">
+        <div
+          className="relative hidden lg:inline-grid w-24 cursor-pointer items-center"
+          onClick={() => history.push("/")}
+        >
           <img
             alt="logo"
             className="object-cover"
@@ -26,7 +30,10 @@ function Header() {
           />
         </div>
 
-        <div className="relative w-10 lg:hidden flex-shrink-0 cursor-pointer">
+        <div
+          className="relative w-10 lg:hidden flex-shrink-0 cursor-pointer"
+          onClick={() => history.push("/")}
+        >
           <img
             alt="profile"
             src="https://1000logos.net/wp-content/uploads/2017/02/insta-logo.png"
@@ -52,7 +59,7 @@ function Header() {
 
         {/* right */}
         <div className="flex items-center justify-end space-x-4">
-          <HomeIcon className="navBtn" />
+          <HomeIcon className="navBtn" onClick={() => history.push("/")} />
           <MenuIcon className="h-6 md:hidden cursor-pointer" />
 
           <div className="relative navBtn">
