@@ -11,7 +11,6 @@ import {
   addDoc,
   collection,
   onSnapshot,
-  orderBy,
   query,
   serverTimestamp,
   setDoc,
@@ -29,10 +28,10 @@ import "emoji-mart/css/emoji-mart.css";
 import { Picker } from "emoji-mart";
 import { useSelector } from "react-redux";
 
+import usePhotos from "../helpers/getCommentsAndLikesForPost";
+
 const Post = ({ post }) => {
   const [comment, setComment] = useState("");
-  const [comments, setComments] = useState([]);
-  const [likes, setLikes] = useState([]);
   const [bookmarks, setBookmarks] = useState([]);
   const [hasLiked, setHasLiked] = useState(false);
   const [hasBookmarked, setHasBookmarked] = useState(false);
@@ -42,38 +41,7 @@ const Post = ({ post }) => {
     (state) => state.user.userData
   );
 
-  //uzimamo sve komentare za post
-  useEffect(() => {
-    if (post?.postId) {
-      const unsubscribe = onSnapshot(
-        query(
-          collection(db, "posts", post?.postId, "comments"),
-          orderBy("timestamp", "desc")
-        ),
-        (snapshot) => {
-          setComments(
-            snapshot.docs.map((doc) => ({ ...doc.data(), id: doc.id }))
-          );
-        }
-      );
-      return unsubscribe;
-    }
-  }, [post?.postId]);
-
-  //uzimamo sve lajkove za post
-  useEffect(() => {
-    if (post?.postId) {
-      const unsubscribe = onSnapshot(
-        query(collection(db, "posts", post?.postId, "likes")),
-        (snapshot) => {
-          setLikes(
-            snapshot.docs.map((doc) => ({ ...doc.data(), documentId: doc.id }))
-          );
-        }
-      );
-      return unsubscribe;
-    }
-  }, [post?.postId]);
+  const { comments, likes } = usePhotos(post?.postId);
 
   //proveravamo da li je ulogovan korisnik lajkovao post
   useEffect(() => {

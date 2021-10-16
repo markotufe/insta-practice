@@ -1,44 +1,9 @@
-import { useEffect, useState } from "react";
-
-import { collection, onSnapshot, orderBy, query } from "@firebase/firestore";
-import { db } from "../firebase";
+import usePhotos from "../helpers/getCommentsAndLikesForPost";
 
 const UserPosts = ({ post }) => {
-  const [comments, setComments] = useState([]);
-  const [likes, setLikes] = useState([]);
-
-  useEffect(() => {
-    if (post?.postId) {
-      const unsubscribe = onSnapshot(
-        query(
-          collection(db, "posts", post?.postId, "comments"),
-          orderBy("timestamp", "desc")
-        ),
-        (snapshot) => {
-          setComments(
-            snapshot.docs.map((doc) => ({ ...doc.data(), id: doc.id }))
-          );
-        }
-      );
-      return unsubscribe;
-    }
-  }, [post?.postId]);
-
-  useEffect(() => {
-    if (post?.postId) {
-      const unsubscribe = onSnapshot(
-        query(collection(db, "posts", post?.postId, "likes")),
-        (snapshot) => {
-          setLikes(
-            snapshot.docs.map((doc) => ({ ...doc.data(), documentId: doc.id }))
-          );
-        }
-      );
-      return unsubscribe;
-    }
-  }, [post?.postId]);
-
   console.log(post);
+
+  const { comments, likes } = usePhotos(post?.postId);
 
   return (
     <div className="w-full h-70 mt-3 relative group">
