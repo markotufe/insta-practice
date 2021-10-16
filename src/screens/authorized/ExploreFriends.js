@@ -1,9 +1,10 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 import { useEffect, useState } from "react";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import UsersToFollow from "../../components/UsersToFollow";
 import { getUsersToFollow } from "../../helpers/getUsersToFollow";
 import { followUser } from "../../helpers/followUnfollowUser";
+import { updateUserFollowing } from "../../redux/slices/userSlice";
 
 const ExploreFriends = () => {
   const {
@@ -12,6 +13,7 @@ const ExploreFriends = () => {
     documentId: activeUserDocumentId,
   } = useSelector((state) => state.user.userData);
   const [usersToFollow, setUsersToFollow] = useState();
+  const dispatch = useDispatch();
 
   useEffect(() => {
     async function suggestedProfiles() {
@@ -29,6 +31,8 @@ const ExploreFriends = () => {
       userToFollowDocumentId,
       userToFollowId
     );
+
+    dispatch(updateUserFollowing({ userToFollowId, followAction: true }));
   };
 
   return (
