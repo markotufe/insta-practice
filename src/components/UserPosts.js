@@ -45,7 +45,7 @@ const UserPosts = ({ post }) => {
       <img
         src={post?.image}
         alt="photourl"
-        className="h-full rounded-md object-cover"
+        className="rounded-md object-cover h-[250px]"
       />
 
       <div className="cursor-pointer rounded-md absolute bottom-0 left-0 bg-gray-500 bg-opacity-50 z-10 w-full justify-evenly items-center h-full bg-black-faded group-hover:flex hidden">
