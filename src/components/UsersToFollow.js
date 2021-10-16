@@ -23,7 +23,7 @@ const UsersToFollow = ({ user, handleFollow }) => {
             className="h-10 w-10 rounded-full cursor-pointer"
           />
           <div className="ml-2">
-            <p className="font-bold">{user?.displayName}</p>
+            <p className="font-bold text-sm">{user?.displayName}</p>
             <p className="text-gray-400">{user?.fullName}</p>
           </div>
         </div>

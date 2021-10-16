@@ -42,7 +42,7 @@ const ExploreFriends = () => {
     <div className="mb-5">
       {!loading ? (
         <>
-          <h1 className="text-center my-10 uppercase text-3xl">
+          <h1 className="text-center my-10 uppercase text-3xl text-gray-800">
             Explore users
           </h1>
 
