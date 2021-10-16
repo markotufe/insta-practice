@@ -36,15 +36,18 @@ const ExploreFriends = () => {
   };
 
   return (
-    <div>
-      <h1>Exploer users</h1>
-      {usersToFollow?.map((user) => (
-        <UsersToFollow
-          key={user?.userId}
-          user={user}
-          handleFollow={handleFollow}
-        />
-      ))}
+    <div className="mb-5">
+      <h1 className="text-center my-10 uppercase text-3xl">Explore users</h1>
+
+      <div className="grid grid-cols-3 gap-5 w-4/5 mx-auto">
+        {usersToFollow?.map((user) => (
+          <UsersToFollow
+            key={user?.userId}
+            user={user}
+            handleFollow={handleFollow}
+          />
+        ))}
+      </div>
     </div>
   );
 };
