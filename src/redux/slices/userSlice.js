@@ -11,6 +11,7 @@ const userSlice = createSlice({
       registeredAt: "",
       userId: "",
       photoURL: null,
+      fullName: "",
     },
     isRegistered: false,
   },

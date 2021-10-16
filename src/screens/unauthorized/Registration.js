@@ -19,10 +19,11 @@ const LoginScreen = (props) => {
   const [emailAddress, setEmailAddress] = useState("");
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
+  const [fullName, setFullName] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const { errorMessage } = useSelector((state) => state.errors);
   const isButtonDisabled =
-    !emailAddress || password.length < 6 || !username || isLoading;
+    !emailAddress || password.length < 6 || !username || !fullName || isLoading;
 
   //registration
   const handleSubmit = async (e) => {
@@ -50,6 +51,7 @@ const LoginScreen = (props) => {
           registeredAt: createdUser?.user.metadata?.creationTime,
           userId: createdUser?.user?.uid,
           photoURL: null,
+          fullName: fullName,
         };
         await addDoc(collectionRef, payload);
         dispatch(setIsRegistered(true));
@@ -82,6 +84,22 @@ const LoginScreen = (props) => {
             placeholder="Enter username"
             value={username}
             onChange={(e) => setUsername(e.target.value)}
+          />
+        </div>
+        <div className="mt-4">
+          <label
+            className="block text-grey-darker text-sm font-bold mb-2"
+            htmlFor="fullname"
+          >
+            Full name
+          </label>
+          <input
+            className="shadow appearance-none border rounded w-full py-2 px-3 text-grey-darker"
+            id="fullname"
+            type="text"
+            placeholder="Enter full name"
+            value={fullName}
+            onChange={(e) => setFullName(e.target.value)}
           />
         </div>
         <div className="mb-4 mt-4">
