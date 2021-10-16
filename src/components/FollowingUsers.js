@@ -1,4 +1,4 @@
-const UsersToFollow = ({ user, handleFollow }) => {
+const UsersToFollow = ({ user, handleUnfollow }) => {
   return (
     <div className="flex">
       {user?.displayName}
@@ -10,7 +10,7 @@ const UsersToFollow = ({ user, handleFollow }) => {
         alt="profile pic"
         className="h-10 w-10 rounded-full cursor-pointer"
       />
-      <button onClick={() => handleFollow(user?.documentId, user?.userId)}>
+      <button onClick={() => handleUnfollow(user?.documentId, user?.userId)}>
         Unfollow
       </button>
     </div>

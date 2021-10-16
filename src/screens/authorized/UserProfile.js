@@ -26,7 +26,7 @@ const UserProfile = () => {
     handleGetFollowingUsers();
   }, [following]);
 
-  const handleFollow = async (userToFollowDocumentId, userToFollowId) => {
+  const handleUnfollow = async (userToFollowDocumentId, userToFollowId) => {
     await unfollowUser(
       activeUserDocumentId,
       activeUserId,
@@ -44,7 +44,7 @@ const UserProfile = () => {
           <FollowingUsers
             key={user?.userId}
             user={user}
-            handleFollow={handleFollow}
+            handleUnfollow={handleUnfollow}
           />
         );
       })}
