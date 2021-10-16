@@ -8,7 +8,7 @@ const UsersToFollow = ({ user, handleFollow }) => {
         <img
           src="https://i2.wp.com/www.stazeibogaze.info/wp-content/uploads/2016/08/default-placeholder.png?fit=1200%2C1200&w=640"
           alt="photourl"
-          className="object-cover"
+          className="object-cover rounded-md"
         />
       </div>
       {/* userdata */}
