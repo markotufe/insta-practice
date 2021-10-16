@@ -1,5 +1,11 @@
 import { useState, useEffect } from "react";
-import { onSnapshot, collection, query, where } from "@firebase/firestore";
+import {
+  onSnapshot,
+  collection,
+  query,
+  where,
+  orderBy,
+} from "@firebase/firestore";
 import Post from "./Post";
 import { db } from "../firebase";
 import { useSelector } from "react-redux";
@@ -13,7 +19,8 @@ const Posts = () => {
     const unsubscribe = onSnapshot(
       query(
         collection(db, "posts"),
-        where("creatorId", "in", !following.length ? ["-"] : following)
+        where("creatorId", "in", !following.length ? ["-"] : following),
+        orderBy("timestamp", "desc")
       ),
       (snapshot) => {
         setPosts(snapshot.docs.map((doc) => ({ ...doc.data() })));

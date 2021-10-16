@@ -44,31 +44,35 @@ const Post = ({ post }) => {
 
   //uzimamo sve komentare za post
   useEffect(() => {
-    const unsubscribe = onSnapshot(
-      query(
-        collection(db, "posts", post?.postId, "comments"),
-        orderBy("timestamp", "desc")
-      ),
-      (snapshot) => {
-        setComments(
-          snapshot.docs.map((doc) => ({ ...doc.data(), id: doc.id }))
-        );
-      }
-    );
-    return unsubscribe;
+    if (post?.postId) {
+      const unsubscribe = onSnapshot(
+        query(
+          collection(db, "posts", post?.postId, "comments"),
+          orderBy("timestamp", "desc")
+        ),
+        (snapshot) => {
+          setComments(
+            snapshot.docs.map((doc) => ({ ...doc.data(), id: doc.id }))
+          );
+        }
+      );
+      return unsubscribe;
+    }
   }, [post?.postId]);
 
   //uzimamo sve lajkove za post
   useEffect(() => {
-    const unsubscribe = onSnapshot(
-      query(collection(db, "posts", post?.postId, "likes")),
-      (snapshot) => {
-        setLikes(
-          snapshot.docs.map((doc) => ({ ...doc.data(), documentId: doc.id }))
-        );
-      }
-    );
-    return unsubscribe;
+    if (post?.postId) {
+      const unsubscribe = onSnapshot(
+        query(collection(db, "posts", post?.postId, "likes")),
+        (snapshot) => {
+          setLikes(
+            snapshot.docs.map((doc) => ({ ...doc.data(), documentId: doc.id }))
+          );
+        }
+      );
+      return unsubscribe;
+    }
   }, [post?.postId]);
 
   //proveravamo da li je ulogovan korisnik lajkovao post
@@ -79,15 +83,17 @@ const Post = ({ post }) => {
 
   //uzimamo sve postove koji imaju bookmark
   useEffect(() => {
-    const unsubscribe = onSnapshot(
-      query(collection(db, "posts", post?.postId, "bookmarks")),
-      (snapshot) => {
-        setBookmarks(
-          snapshot.docs.map((doc) => ({ ...doc.data(), documentId: doc?.id }))
-        );
-      }
-    );
-    return unsubscribe;
+    if (post?.postId) {
+      const unsubscribe = onSnapshot(
+        query(collection(db, "posts", post?.postId, "bookmarks")),
+        (snapshot) => {
+          setBookmarks(
+            snapshot.docs.map((doc) => ({ ...doc.data(), documentId: doc?.id }))
+          );
+        }
+      );
+      return unsubscribe;
+    }
   }, [post?.postId]);
 
   useEffect(() => {
