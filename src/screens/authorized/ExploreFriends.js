@@ -39,7 +39,7 @@ const ExploreFriends = () => {
     <div className="mb-5">
       <h1 className="text-center my-10 uppercase text-3xl">Explore users</h1>
 
-      <div className="grid grid-cols-3 gap-5 w-4/5 mx-auto">
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-5 w-4/5 mx-auto">
         {usersToFollow?.map((user) => (
           <UsersToFollow
             key={user?.userId}
