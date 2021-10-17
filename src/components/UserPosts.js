@@ -2,8 +2,6 @@ import usePhotos from "../helpers/getCommentsAndLikesForPost";
 import { HeartIcon, ChatIcon } from "@heroicons/react/solid";
 
 const UserPosts = ({ post }) => {
-  console.log(post);
-
   const { comments, likes } = usePhotos(post?.postId);
 
   return (
@@ -11,7 +9,7 @@ const UserPosts = ({ post }) => {
       <img
         src={post?.image}
         alt="photourl"
-        className="rounded-md object-cover md:h-[250px]"
+        className="rounded-md object-cover md:h-[250px] mx-auto"
       />
 
       <div className="cursor-pointer rounded-md absolute bottom-0 left-0 bg-gray-500 bg-opacity-50 z-10 w-full justify-evenly items-center h-full bg-black-faded group-hover:flex hidden">

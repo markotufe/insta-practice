@@ -15,6 +15,7 @@ import {
   where,
 } from "@firebase/firestore";
 import { db } from "../../firebase";
+import UserProfileData from "../../components/UserProfileData";
 
 const UserProfile = () => {
   const dispatch = useDispatch();
@@ -63,7 +64,7 @@ const UserProfile = () => {
   };
 
   return (
-    <div className="grid grid-cols-1 md:grid-cols-2 md:max-w-3xl xl:grid-cols-4 xl:max-w-6xl mx-auto pt-6 min-h-screen mb-5">
+    <div className="grid grid-cols-1 md:grid-cols-2 md:max-w-3xl xl:grid-cols-5 xl:max-w-6xl mx-auto pt-6 min-h-screen mb-5">
       {/* {followingUsers.map((user) => {
         return (
           <FollowingUsers
@@ -73,10 +74,10 @@ const UserProfile = () => {
           />
         );
       })} */}
-      <div className="col-span-1 bg-red-700">
-        <div className="fixed">levo</div>
+      <div className="col-span-1 mr-5">
+        <UserProfileData />
       </div>
-      <div className="col-span-3 ">
+      <div className="col-span-4">
         <div className="grid grid-cols-1 md:grid-cols-3 gap-x-2 mx-auto w-11/12">
           {userPosts.map((post) => (
             <UserPosts key={post?.postId} post={post} />
