@@ -18,7 +18,6 @@ const UsersToFollow = ({ user, handleFollow }) => {
         <Link
           to={{
             pathname: `/profile/${user?.displayName}`,
-            state: { userId: user?.userId },
           }}
           className="flex items-center cursor-pointer"
         >
