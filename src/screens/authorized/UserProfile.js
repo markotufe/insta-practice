@@ -1,7 +1,7 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 import { useEffect, useState } from "react";
 import { useSelector } from "react-redux";
-import { getFollowingUsers } from "../../helpers/getFollowingUsers";
+import useGetFollowingUsers from "../../helpers/getFollowingUsers";
 import { updateUserFollowing } from "../../redux/slices/userSlice";
 import { useDispatch } from "react-redux";
 import FollowingUsers from "../../components/FollowingUsers";
@@ -25,25 +25,17 @@ const UserProfile = () => {
   const userIdFromUrl = location.state;
 
   const dispatch = useDispatch();
-  const [followingUsers, setFollowingUsers] = useState([]);
   const [userPosts, setUserPosts] = useState([]);
 
   const {
     userId: activeUserId,
-    following,
     documentId: activeUserDocumentId,
     displayName,
   } = useSelector((state) => state.user.userData);
 
-  useEffect(() => {
-    async function handleGetFollowingUsers() {
-      const response = await getFollowingUsers(activeUserId);
-      console.log(response);
-      setFollowingUsers(response);
-    }
+  const { followingUsers } = useGetFollowingUsers(activeUserDocumentId);
 
-    handleGetFollowingUsers();
-  }, [following]);
+  // console.log(followingUsers);
 
   useEffect(() => {
     const unsubscribe = onSnapshot(

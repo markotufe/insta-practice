@@ -1,7 +1,7 @@
 import { Link } from "react-router-dom";
 
 const UsersToFollow = ({ user, handleFollow }) => {
-  console.log(user);
+  // console.log(user);
 
   return (
     <div className="w-full flex flex-col  items-center justify-between bg-white">
@@ -35,7 +35,7 @@ const UsersToFollow = ({ user, handleFollow }) => {
           </div>
         </Link>
         <button
-          onClick={() => handleFollow(user?.documentId, user?.userId)}
+          onClick={() => handleFollow(user)}
           className="text-blue-400 text-sm font-bold"
         >
           Follow

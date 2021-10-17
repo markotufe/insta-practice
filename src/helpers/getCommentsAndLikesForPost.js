@@ -3,7 +3,7 @@ import { useEffect, useState } from "react";
 import { collection, onSnapshot, orderBy, query } from "@firebase/firestore";
 import { db } from "../firebase";
 
-export default function usePhotos(postId) {
+export default function useGetCommentsAndLikesForPost(postId) {
   const [comments, setComments] = useState([]);
   const [likes, setLikes] = useState([]);
 

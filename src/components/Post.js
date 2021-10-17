@@ -28,7 +28,7 @@ import "emoji-mart/css/emoji-mart.css";
 import { Picker } from "emoji-mart";
 import { useSelector } from "react-redux";
 
-import usePhotos from "../helpers/getCommentsAndLikesForPost";
+import useGetCommentsAndLikesForPost from "../helpers/getCommentsAndLikesForPost";
 
 const Post = ({ post }) => {
   const [comment, setComment] = useState("");
@@ -41,7 +41,7 @@ const Post = ({ post }) => {
     (state) => state.user.userData
   );
 
-  const { comments, likes } = usePhotos(post?.postId);
+  const { comments, likes } = useGetCommentsAndLikesForPost(post?.postId);
 
   //proveravamo da li je ulogovan korisnik lajkovao post
   useEffect(() => {

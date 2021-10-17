@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 import { useState, useEffect } from "react";
 import {
   onSnapshot,
@@ -10,16 +11,25 @@ import Post from "./Post";
 import { db } from "../firebase";
 import { useSelector } from "react-redux";
 import NoPostsMessage from "./NoPostsMessage";
+import useGetFollowingUsers from "../helpers/getFollowingUsers";
 
 const Posts = () => {
   const [posts, setPosts] = useState([]);
-  const { following } = useSelector((state) => state.user.userData);
+  const { userData } = useSelector((state) => state.user);
+
+  const { followingUsersArrayOfIds } = useGetFollowingUsers(
+    userData?.documentId
+  );
 
   useEffect(() => {
     const unsubscribe = onSnapshot(
       query(
         collection(db, "posts"),
-        where("creatorId", "in", !following.length ? ["-"] : following),
+        where(
+          "creatorId",
+          "in",
+          !followingUsersArrayOfIds.length ? ["-"] : followingUsersArrayOfIds
+        ),
         orderBy("timestamp", "desc")
       ),
       (snapshot) => {
@@ -27,7 +37,7 @@ const Posts = () => {
       }
     );
     return unsubscribe;
-  }, [following]);
+  }, [followingUsersArrayOfIds.length]);
 
   return (
     <div>

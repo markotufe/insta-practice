@@ -1,42 +1,17 @@
-/* eslint-disable react-hooks/exhaustive-deps */
-import { useEffect, useState } from "react";
-import { useDispatch, useSelector } from "react-redux";
+import { useSelector } from "react-redux";
 import UsersToFollow from "../../components/UsersToFollow";
 import Loader from "../../components/Loader";
-import { getUsersToFollow } from "../../helpers/getUsersToFollow";
+import useGetUsersToFollow from "../../helpers/getUsersToFollow";
 import { followUser } from "../../helpers/followUnfollowUser";
-import { updateUserFollowing } from "../../redux/slices/userSlice";
 
 const ExploreFriends = () => {
-  const {
-    userId: activeUserId,
-    following,
-    documentId: activeUserDocumentId,
-  } = useSelector((state) => state.user.userData);
-  const [usersToFollow, setUsersToFollow] = useState();
-  const [loading, setLoading] = useState(true);
-  const dispatch = useDispatch();
+  const { userData } = useSelector((state) => state.user);
 
-  useEffect(() => {
-    async function suggestedProfiles() {
-      const response = await getUsersToFollow(following, activeUserId);
-      setUsersToFollow(response);
-      setLoading(false);
-    }
-
-    suggestedProfiles();
-  }, [following]);
-
-  const handleFollow = async (userToFollowDocumentId, userToFollowId) => {
-    await followUser(
-      activeUserDocumentId,
-      activeUserId,
-      userToFollowDocumentId,
-      userToFollowId
-    );
-
-    dispatch(updateUserFollowing({ userToFollowId, followAction: true }));
+  const handleFollow = async (userToFollow) => {
+    await followUser(userData, userToFollow);
   };
+
+  const { usersToFollow, loading } = useGetUsersToFollow();
 
   return (
     <div className="mb-5">
@@ -46,7 +21,7 @@ const ExploreFriends = () => {
             Explore users
           </h1>
 
-          {!usersToFollow.length ? (
+          {!usersToFollow?.length ? (
             <h1 className="text-center text-xl">No users to follow</h1>
           ) : (
             <div className="grid grid-cols-1 md:grid-cols-3 gap-5 w-4/5 mx-auto">

@@ -46,8 +46,6 @@ const LoginScreen = (props) => {
         const payload = {
           displayName: username,
           email: createdUser?.user?.email,
-          following: [],
-          followers: [],
           registeredAt: createdUser?.user.metadata?.creationTime,
           userId: createdUser?.user?.uid,
           photoURL: null,

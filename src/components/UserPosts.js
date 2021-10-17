@@ -1,8 +1,8 @@
-import usePhotos from "../helpers/getCommentsAndLikesForPost";
+import useGetCommentsAndLikesForPost from "../helpers/getCommentsAndLikesForPost";
 import { HeartIcon, ChatIcon } from "@heroicons/react/solid";
 
 const UserPosts = ({ post }) => {
-  const { comments, likes } = usePhotos(post?.postId);
+  const { comments, likes } = useGetCommentsAndLikesForPost(post?.postId);
 
   return (
     <div className="w-full h-70 mt-3 relative group">

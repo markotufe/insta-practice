@@ -1,36 +1,27 @@
-import { collection, getDocs, where, query } from "firebase/firestore";
+import { useEffect, useState } from "react";
+import { collection, onSnapshot, orderBy, query } from "@firebase/firestore";
 import { db } from "../firebase";
 
-export async function getFollowingUsers(userId) {
-  try {
-    const collectionRef = collection(db, "users");
-    const q = query(collectionRef, where("userId", "==", userId));
+export default function useGetFollowingUsers(userDocumentId) {
+  const [followingUsers, setFollowingUsers] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const followingUsersArrayOfIds = followingUsers.map((user) => user?.userId);
 
-    const snapshot = await getDocs(q);
-
-    const results = snapshot.docs.map((doc) => ({
-      ...doc.data(),
-      documentId: doc.id,
-    }));
-
-    const userFollowingArray = results[0]?.following;
-
-    const following = await Promise.all(
-      userFollowingArray.map(async (result) => {
-        const collectionRef = collection(db, "users");
-        const q = query(collectionRef, where("userId", "==", result));
-        const snapshot = await getDocs(q);
-        const data = snapshot.docs.map((doc) => ({
-          ...doc.data(),
-          documentId: doc.id,
-        }));
-
-        return data[0];
-      })
+  useEffect(() => {
+    const unsubscribe = onSnapshot(
+      query(
+        collection(db, "users", userDocumentId, "following"),
+        orderBy("timestamp", "desc")
+      ),
+      (snapshot) => {
+        setFollowingUsers(
+          snapshot.docs.map((doc) => ({ ...doc.data(), id: doc.id }))
+        );
+        setLoading(false);
+      }
     );
+    return unsubscribe;
+  }, [userDocumentId, followingUsersArrayOfIds.length]);
 
-    return following;
-  } catch (error) {
-    console.log(error);
-  }
+  return { followingUsers, followingUsersArrayOfIds, loading };
 }
