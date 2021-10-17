@@ -2,6 +2,7 @@
 import { useEffect, useState } from "react";
 import { useSelector } from "react-redux";
 import { getFollowingUsers } from "../../helpers/getFollowingUsers";
+import { getUserById } from "../../helpers/getUserById";
 import { updateUserFollowing } from "../../redux/slices/userSlice";
 import { useDispatch } from "react-redux";
 import FollowingUsers from "../../components/FollowingUsers";
@@ -21,6 +22,7 @@ const UserProfile = () => {
   const dispatch = useDispatch();
   const [followingUsers, setFollowingUsers] = useState([]);
   const [userPosts, setUserPosts] = useState([]);
+  const [loggedInUserId, setLoggedInUserId] = useState({});
 
   const {
     userId: activeUserId,
@@ -37,6 +39,15 @@ const UserProfile = () => {
 
     handleGetFollowingUsers();
   }, [following]);
+
+  useEffect(() => {
+    async function handleGetUserById() {
+      const response = await getUserById(activeUserId);
+      setLoggedInUserId(response?.userId);
+    }
+
+    handleGetUserById();
+  }, []);
 
   useEffect(() => {
     const unsubscribe = onSnapshot(
@@ -63,6 +74,8 @@ const UserProfile = () => {
     dispatch(updateUserFollowing({ userToFollowId, followAction: false }));
   };
 
+  const showFollowButton = loggedInUserId !== activeUserId;
+
   return (
     <div className="grid grid-cols-1 md:grid-cols-2 md:max-w-3xl xl:grid-cols-5 xl:max-w-6xl mx-auto pt-6 min-h-screen mb-5">
       {/* {followingUsers.map((user) => {
@@ -75,7 +88,7 @@ const UserProfile = () => {
         );
       })} */}
       <div className="col-span-1 mr-5">
-        <UserProfileData />
+        <UserProfileData showFollowButton={showFollowButton} />
       </div>
       <div className="col-span-4">
         <div className="grid grid-cols-1 md:grid-cols-3 gap-x-2 mx-auto w-11/12">

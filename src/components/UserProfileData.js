@@ -1,4 +1,4 @@
-const UserProfileData = () => {
+const UserProfileData = ({ showFollowButton }) => {
   return (
     <div className="flex flex-col items-center justify-center mt-4 mx-auto">
       <img
@@ -26,18 +26,21 @@ const UserProfileData = () => {
         </div>
       </div>
       <div className="w-full">
-        <button
-          type="submit"
-          className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded disabled:cursor-not-allowed disabled:opacity-50 w-full mt-5"
-        >
-          Follow
-        </button>
-        <button
-          type="submit"
-          className="bg-gray-300 hover:bg-gray-400 text-gray-800 font-bold py-2 px-4 rounded w-full mt-5"
-        >
-          Edit Profile
-        </button>
+        {showFollowButton ? (
+          <button
+            type="submit"
+            className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded disabled:cursor-not-allowed disabled:opacity-50 w-full mt-5"
+          >
+            Follow
+          </button>
+        ) : (
+          <button
+            type="submit"
+            className="bg-gray-300 hover:bg-gray-400 text-gray-800 font-bold py-2 px-4 rounded w-full mt-5"
+          >
+            Edit Profile
+          </button>
+        )}
       </div>
     </div>
   );

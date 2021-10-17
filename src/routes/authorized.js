@@ -1,5 +1,6 @@
 import FeedScreen from "../screens/authorized/Feed";
-import UserProfile from "../screens/authorized/UserProfile";
+import Me from "../screens/authorized/Me";
+import Users from "../screens/authorized/Users";
 import ExploreFriends from "../screens/authorized/ExploreFriends";
 
 const unauthorised = [
@@ -9,9 +10,14 @@ const unauthorised = [
     component: FeedScreen,
   },
   {
+    path: "/me/:id",
+    name: "Me",
+    component: Me,
+  },
+  {
     path: "/profile/:id",
-    name: "UserProfile",
-    component: UserProfile,
+    name: "Users",
+    component: Users,
   },
   {
     path: "/explore",

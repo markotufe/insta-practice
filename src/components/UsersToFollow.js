@@ -1,3 +1,5 @@
+import { Link } from "react-router-dom";
+
 const UsersToFollow = ({ user, handleFollow }) => {
   console.log(user);
 
@@ -13,20 +15,26 @@ const UsersToFollow = ({ user, handleFollow }) => {
       </div>
       {/* userdata */}
       <div className="flex items-center justify-between w-full mt-3">
-        <div className="flex items-center">
+        <Link
+          to={{
+            pathname: `/profile/${user?.displayName}`,
+            state: { userId: user?.userId },
+          }}
+          className="flex items-center cursor-pointer"
+        >
           <img
             src={
               user?.photoURL ??
               "https://i2.wp.com/www.stazeibogaze.info/wp-content/uploads/2016/08/default-placeholder.png?fit=1200%2C1200&w=640"
             }
             alt="profile pic"
-            className="h-10 w-10 rounded-full cursor-pointer"
+            className="h-10 w-10 rounded-full"
           />
           <div className="ml-2">
             <p className="font-bold text-sm">{user?.displayName}</p>
             <p className="text-gray-400">{user?.fullName}</p>
           </div>
-        </div>
+        </Link>
         <button
           onClick={() => handleFollow(user?.documentId, user?.userId)}
           className="text-blue-400 text-sm font-bold"
