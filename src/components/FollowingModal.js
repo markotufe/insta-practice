@@ -46,7 +46,7 @@ export const FollowingModal = ({ unfollowUser, followingUsers }) => {
           >
             <div className="inline-block align-bottom bg-white rounded-lg px-4 pt-5 pb-4 text-left overflow-hidden transform transition-all sm:my-8 sm:align-middle sm:max-w-sm sm:w-full sm:p-6">
               <h1 className="mb-4 font-semibold text-xl">Following</h1>
-              <div className="overflow-y-scroll h-64">
+              <div className="overflow-y-scroll scrollbar-thumb-black scrollbar-thin h-64">
                 {followingUsers.map((user) => {
                   return (
                     <FollowingUsers
