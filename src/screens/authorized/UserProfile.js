@@ -23,9 +23,8 @@ const UserProfile = () => {
   const dispatch = useDispatch();
 
   const location = useLocation();
-  let { id: usernameFromUrl } = useParams();
 
-  const userIdFromUrl = location.state;
+  let { id: usernameFromUrl } = useParams();
 
   const [userPosts, setUserPosts] = useState([]);
 
@@ -50,7 +49,7 @@ const UserProfile = () => {
       }
     );
     return unsubscribe;
-  }, [userIdFromUrl]);
+  }, []);
 
   const handleUnfollow = async (
     userToUnfollow,
@@ -80,6 +79,11 @@ const UserProfile = () => {
           followingCount={followingUsers?.length}
           followersCount={followers?.length}
           postsCount={userPosts.length}
+          fullName={
+            usernameFromUrl === userData?.displayName
+              ? userData?.fullName
+              : location?.state?.fullName
+          }
         />
       </div>
       <div className="col-span-4">
@@ -88,6 +92,7 @@ const UserProfile = () => {
             message="Create your first post"
             btnText="Create post"
             btnFunction={() => dispatch(setModal(true))}
+            showCreatePostButton={usernameFromUrl === userData?.displayName}
           />
         ) : (
           <div className="grid grid-cols-1 md:grid-cols-3 gap-x-2 mx-auto w-11/12">
