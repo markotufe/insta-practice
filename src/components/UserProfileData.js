@@ -18,11 +18,11 @@ const UserProfileData = ({
         <h2 className="font-bold text-2xl">{fullName}</h2>
       </div>
       <div className="flex justify-between text-center mt-6 w-full">
-        <div>
+        <div className="cursor-pointer">
           <p className="text-lg font-semibold">{postsCount}</p>
           <p className="text-sm text-gray-500">posts</p>
         </div>
-        <div>
+        <div className="cursor-pointer">
           <p className="text-lg font-semibold">{followersCount}</p>
           <p className="text-sm text-gray-500">followers</p>
         </div>
