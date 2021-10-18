@@ -1,11 +1,15 @@
+import { useDispatch } from "react-redux";
+import { setFollowingModal } from "../redux/slices/modalSlice";
+
 const UserProfileData = ({
   showFollowButton,
   followingCount,
   followersCount,
   postsCount,
   fullName,
-  setIsFollowingModalOpen,
 }) => {
+  const dispatch = useDispatch();
+
   return (
     <div className="flex flex-col items-center justify-center mt-4 mx-auto">
       <img
@@ -29,7 +33,7 @@ const UserProfileData = ({
         </div>
         <div
           className="cursor-pointer"
-          onClick={() => setIsFollowingModalOpen(true)}
+          onClick={() => dispatch(setFollowingModal(true))}
         >
           <p className="text-lg font-semibold">{followingCount}</p>
           <p className="text-sm text-gray-500">following</p>

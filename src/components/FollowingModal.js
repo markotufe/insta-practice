@@ -1,19 +1,21 @@
 import { Dialog, Transition } from "@headlessui/react";
 import { Fragment } from "react";
 import FollowingUsers from "./FollowingUsers";
+import { useDispatch, useSelector } from "react-redux";
+import { setFollowingModal } from "../redux/slices/modalSlice";
 
-export const FollowingModal = ({
-  isFollowingModalOpen,
-  setIsFollowingModalOpen,
-  unfollowUser,
-  followingUsers,
-}) => {
+export const FollowingModal = ({ unfollowUser, followingUsers }) => {
+  const dispatch = useDispatch();
+  const isFollowingModalOpen = useSelector(
+    (state) => state.modal.isFollowingModalOpen
+  );
+
   return (
     <Transition.Root show={isFollowingModalOpen} as={Fragment}>
       <Dialog
         as="div"
         className="fixed z-10 inset-0 overflow-y-auto"
-        onClose={() => setIsFollowingModalOpen(false)}
+        onClose={() => dispatch(setFollowingModal(false))}
       >
         <div className="flex items-end justify-center min-h-[800px] sm:min-h-screen pt-4 px-4 pb-20 text-center sm:block sm:p-0">
           <Transition.Child

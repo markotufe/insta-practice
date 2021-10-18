@@ -27,8 +27,6 @@ const UserProfile = () => {
   let { id: usernameFromUrl } = useParams();
 
   const [userPosts, setUserPosts] = useState([]);
-  const [isFollowingModalOpen, setIsFollowingModalOpen] = useState(false);
-
   const { userData } = useSelector((state) => state.user);
 
   const { followingUsers } = useGetFollowingUsers(userData?.documentId);
@@ -66,15 +64,12 @@ const UserProfile = () => {
   return (
     <>
       <FollowingModal
-        isFollowingModalOpen={isFollowingModalOpen}
-        setIsFollowingModalOpen={setIsFollowingModalOpen}
         unfollowUser={handleUnfollow}
         followingUsers={followingUsers}
       />
       <div className="grid grid-cols-1 md:grid-cols-2 md:max-w-3xl xl:grid-cols-5 xl:max-w-6xl mx-auto pt-6 min-h-screen mb-5">
         <div className="col-span-1 mr-5">
           <UserProfileData
-            setIsFollowingModalOpen={setIsFollowingModalOpen}
             showFollowButton={false}
             followingCount={followingUsers?.length}
             followersCount={followers?.length}
