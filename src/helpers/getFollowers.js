@@ -2,29 +2,29 @@ import { useEffect, useState } from "react";
 import { collection, onSnapshot, orderBy, query } from "@firebase/firestore";
 import { db } from "../firebase";
 
-export default function useGetFollowingUsers(userDocumentId) {
-  const [followingUsers, setFollowingUsers] = useState([]);
+export default function useGetFollowers(userDocumentId) {
+  const [followers, setFollowers] = useState([]);
   const [loading, setLoading] = useState(true);
-  const followingUsersArrayOfIds = followingUsers.map((user) => user?.userId);
+  const followersArrayOfIds = followers.map((user) => user?.userId);
 
   useEffect(() => {
     const unsubscribe = onSnapshot(
       query(
-        collection(db, "users", userDocumentId, "following"),
+        collection(db, "users", userDocumentId, "followers"),
         orderBy("timestamp", "desc")
       ),
       (snapshot) => {
-        setFollowingUsers(
+        setFollowers(
           snapshot.docs.map((doc) => ({
             ...doc.data(),
-            followingDocumentId: doc.id,
+            followerDocumentId: doc.id,
           }))
         );
         setLoading(false);
       }
     );
     return unsubscribe;
-  }, [userDocumentId, followingUsersArrayOfIds.length]);
+  }, [userDocumentId, followersArrayOfIds.length]);
 
-  return { followingUsers, followingUsersArrayOfIds, loading };
+  return { followers, followersArrayOfIds, loading };
 }

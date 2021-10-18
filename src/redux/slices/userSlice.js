@@ -6,8 +6,6 @@ const userSlice = createSlice({
     userData: {
       displayName: "",
       email: "",
-      following: [],
-      followers: [],
       registeredAt: "",
       userId: "",
       photoURL: null,
@@ -22,17 +20,9 @@ const userSlice = createSlice({
     setIsRegistered(state, action) {
       state.isRegistered = action.payload;
     },
-    updateUserFollowing(state, action) {
-      state.userData.following = action.payload.followAction
-        ? [...state.userData.following, action.payload.userToFollowId]
-        : state.userData.following.filter(
-            (userId) => userId !== action.payload.userToFollowId
-          );
-    },
   },
 });
 
-export const { setUser, setIsRegistered, updateUserFollowing } =
-  userSlice.actions;
+export const { setUser, setIsRegistered } = userSlice.actions;
 
 export default userSlice.reducer;

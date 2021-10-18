@@ -1,4 +1,14 @@
-const UsersToFollow = ({ user, handleUnfollow }) => {
+import { useSelector } from "react-redux";
+import useGetFollowers from "../helpers/getFollowers";
+
+const FollowingUsers = ({ user, handleUnfollow }) => {
+  const { followers } = useGetFollowers(user?.documentId);
+  const { userData } = useSelector((state) => state.user);
+
+  const activeUser = followers.find(
+    (user) => user?.userId === userData?.userId
+  );
+
   return (
     <div className="flex">
       {user?.displayName}
@@ -10,11 +20,13 @@ const UsersToFollow = ({ user, handleUnfollow }) => {
         alt="profile pic"
         className="h-10 w-10 rounded-full cursor-pointer"
       />
-      <button onClick={() => handleUnfollow(user?.documentId, user?.userId)}>
+      <button
+        onClick={() => handleUnfollow(user, activeUser?.followerDocumentId)}
+      >
         Unfollow
       </button>
     </div>
   );
 };
 
-export default UsersToFollow;
+export default FollowingUsers;

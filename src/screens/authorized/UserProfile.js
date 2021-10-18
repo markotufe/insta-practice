@@ -2,8 +2,7 @@
 import { useEffect, useState } from "react";
 import { useSelector } from "react-redux";
 import useGetFollowingUsers from "../../helpers/getFollowingUsers";
-import { updateUserFollowing } from "../../redux/slices/userSlice";
-import { useDispatch } from "react-redux";
+import useGetFollowers from "../../helpers/getFollowers";
 import FollowingUsers from "../../components/FollowingUsers";
 import UserPosts from "../../components/UserPosts";
 import { unfollowUser } from "../../helpers/followUnfollowUser";
@@ -24,24 +23,22 @@ const UserProfile = () => {
 
   const userIdFromUrl = location.state;
 
-  const dispatch = useDispatch();
   const [userPosts, setUserPosts] = useState([]);
 
-  const {
-    userId: activeUserId,
-    documentId: activeUserDocumentId,
-    displayName,
-  } = useSelector((state) => state.user.userData);
+  const { userData } = useSelector((state) => state.user);
 
-  const { followingUsers } = useGetFollowingUsers(activeUserDocumentId);
-
-  // console.log(followingUsers);
+  const { followingUsers } = useGetFollowingUsers(userData?.documentId);
+  // const { followers } = useGetFollowers(userData?.documentId);
 
   useEffect(() => {
     const unsubscribe = onSnapshot(
       query(
         collection(db, "posts"),
-        where("creatorDisplayName", "==", usernameFromUrl ?? displayName),
+        where(
+          "creatorDisplayName",
+          "==",
+          usernameFromUrl ?? userData?.displayName
+        ),
         orderBy("timestamp", "desc")
       ),
       (snapshot) => {
@@ -51,20 +48,20 @@ const UserProfile = () => {
     return unsubscribe;
   }, [userIdFromUrl]);
 
-  const handleUnfollow = async (userToFollowDocumentId, userToFollowId) => {
+  const handleUnfollow = async (
+    userToUnfollow,
+    activeUserDocumentIdInFollowers
+  ) => {
     await unfollowUser(
-      activeUserDocumentId,
-      activeUserId,
-      userToFollowDocumentId,
-      userToFollowId
+      userData,
+      userToUnfollow,
+      activeUserDocumentIdInFollowers
     );
-
-    dispatch(updateUserFollowing({ userToFollowId, followAction: false }));
   };
 
   return (
     <div className="grid grid-cols-1 md:grid-cols-2 md:max-w-3xl xl:grid-cols-5 xl:max-w-6xl mx-auto pt-6 min-h-screen mb-5">
-      {/* {followingUsers.map((user) => {
+      {followingUsers.map((user) => {
         return (
           <FollowingUsers
             key={user?.userId}
@@ -72,7 +69,7 @@ const UserProfile = () => {
             handleUnfollow={handleUnfollow}
           />
         );
-      })} */}
+      })}
       <div className="col-span-1 mr-5">
         <UserProfileData showFollowButton={false} />
       </div>
