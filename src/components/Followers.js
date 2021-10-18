@@ -3,7 +3,7 @@ import { Link } from "react-router-dom";
 import useGetFollowers from "../helpers/getFollowers";
 import { setFollowersModal } from "../redux/slices/modalSlice";
 
-const Followers = ({ user, handleUnfollow, handleFollow }) => {
+const Followers = ({ user, handleUnfollow, handleFollow, followingUsers }) => {
   const dispatch = useDispatch();
   const { followers } = useGetFollowers(user?.documentId);
   const { userData } = useSelector((state) => state.user);
@@ -11,6 +11,11 @@ const Followers = ({ user, handleUnfollow, handleFollow }) => {
   const activeUser = followers.find(
     (user) => user?.userId === userData?.userId
   );
+
+  const isFollowing =
+    followingUsers.find(
+      (followingUser) => followingUser?.userId === user?.userId
+    ) !== undefined;
 
   return (
     <Link
@@ -36,12 +41,21 @@ const Followers = ({ user, handleUnfollow, handleFollow }) => {
         </div>
       </div>
 
-      <button
-        className="text-blue-500 font-bold"
-        onClick={() => handleUnfollow(user, activeUser?.followerDocumentId)}
-      >
-        Unfollow
-      </button>
+      {isFollowing ? (
+        <button
+          className="text-blue-500 font-bold"
+          onClick={() => handleUnfollow(user, activeUser?.followerDocumentId)}
+        >
+          Unfollow
+        </button>
+      ) : (
+        <button
+          className="text-blue-500 font-bold"
+          onClick={() => handleUnfollow(user, activeUser?.followerDocumentId)}
+        >
+          Follow
+        </button>
+      )}
     </Link>
   );
 };

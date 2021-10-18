@@ -4,7 +4,12 @@ import { useDispatch, useSelector } from "react-redux";
 import { setFollowersModal } from "../redux/slices/modalSlice";
 import Followers from "./Followers";
 
-export const FollowersModal = ({ unfollowUser, followUser, followers }) => {
+export const FollowersModal = ({
+  unfollowUser,
+  followUser,
+  followers,
+  followingUsers,
+}) => {
   const dispatch = useDispatch();
   const isFollowersModalOpen = useSelector(
     (state) => state.modal.isFollowersModalOpen
@@ -54,6 +59,7 @@ export const FollowersModal = ({ unfollowUser, followUser, followers }) => {
                       user={user}
                       handleUnfollow={unfollowUser}
                       handleFollow={followUser}
+                      followingUsers={followingUsers}
                     />
                   );
                 })}
