@@ -1,4 +1,9 @@
-const UserProfileData = ({ showFollowButton }) => {
+const UserProfileData = ({
+  showFollowButton,
+  followingCount,
+  followersCount,
+  postsCount,
+}) => {
   return (
     <div className="flex flex-col items-center justify-center mt-4 mx-auto">
       <img
@@ -13,15 +18,15 @@ const UserProfileData = ({ showFollowButton }) => {
       </div>
       <div className="flex justify-between text-center mt-6 w-full">
         <div>
-          <p className="text-lg font-semibold">518</p>
+          <p className="text-lg font-semibold">{postsCount}</p>
           <p className="text-sm text-gray-500">posts</p>
         </div>
         <div>
-          <p className="text-lg font-semibold">220k</p>
+          <p className="text-lg font-semibold">{followersCount}</p>
           <p className="text-sm text-gray-500">followers</p>
         </div>
         <div>
-          <p className="text-lg font-semibold">197</p>
+          <p className="text-lg font-semibold">{followingCount}</p>
           <p className="text-sm text-gray-500">following</p>
         </div>
       </div>

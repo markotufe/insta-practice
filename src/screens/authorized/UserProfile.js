@@ -28,7 +28,7 @@ const UserProfile = () => {
   const { userData } = useSelector((state) => state.user);
 
   const { followingUsers } = useGetFollowingUsers(userData?.documentId);
-  // const { followers } = useGetFollowers(userData?.documentId);
+  const { followers } = useGetFollowers(userData?.documentId);
 
   useEffect(() => {
     const unsubscribe = onSnapshot(
@@ -61,7 +61,7 @@ const UserProfile = () => {
 
   return (
     <div className="grid grid-cols-1 md:grid-cols-2 md:max-w-3xl xl:grid-cols-5 xl:max-w-6xl mx-auto pt-6 min-h-screen mb-5">
-      {followingUsers.map((user) => {
+      {/* {followingUsers.map((user) => {
         return (
           <FollowingUsers
             key={user?.userId}
@@ -69,9 +69,14 @@ const UserProfile = () => {
             handleUnfollow={handleUnfollow}
           />
         );
-      })}
+      })} */}
       <div className="col-span-1 mr-5">
-        <UserProfileData showFollowButton={false} />
+        <UserProfileData
+          showFollowButton={false}
+          followingCount={followingUsers?.length}
+          followersCount={followers?.length}
+          postsCount={userPosts.length}
+        />
       </div>
       <div className="col-span-4">
         <div className="grid grid-cols-1 md:grid-cols-3 gap-x-2 mx-auto w-11/12">
