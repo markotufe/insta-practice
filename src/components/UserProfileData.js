@@ -4,6 +4,7 @@ const UserProfileData = ({
   followersCount,
   postsCount,
   fullName,
+  setIsFollowingModalOpen,
 }) => {
   return (
     <div className="flex flex-col items-center justify-center mt-4 mx-auto">
@@ -26,7 +27,10 @@ const UserProfileData = ({
           <p className="text-lg font-semibold">{followersCount}</p>
           <p className="text-sm text-gray-500">followers</p>
         </div>
-        <div>
+        <div
+          className="cursor-pointer"
+          onClick={() => setIsFollowingModalOpen(true)}
+        >
           <p className="text-lg font-semibold">{followingCount}</p>
           <p className="text-sm text-gray-500">following</p>
         </div>

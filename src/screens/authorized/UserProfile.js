@@ -3,7 +3,7 @@ import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import useGetFollowingUsers from "../../helpers/getFollowingUsers";
 import useGetFollowers from "../../helpers/getFollowers";
-import FollowingUsers from "../../components/FollowingUsers";
+import { FollowingModal } from "../../components/FollowingModal";
 import UserPosts from "../../components/UserPosts";
 import { unfollowUser } from "../../helpers/followUnfollowUser";
 import {
@@ -27,6 +27,7 @@ const UserProfile = () => {
   let { id: usernameFromUrl } = useParams();
 
   const [userPosts, setUserPosts] = useState([]);
+  const [isFollowingModalOpen, setIsFollowingModalOpen] = useState(false);
 
   const { userData } = useSelector((state) => state.user);
 
@@ -49,7 +50,7 @@ const UserProfile = () => {
       }
     );
     return unsubscribe;
-  }, []);
+  }, [usernameFromUrl, userData?.displayName]);
 
   const handleUnfollow = async (
     userToUnfollow,
@@ -63,46 +64,46 @@ const UserProfile = () => {
   };
 
   return (
-    <div className="grid grid-cols-1 md:grid-cols-2 md:max-w-3xl xl:grid-cols-5 xl:max-w-6xl mx-auto pt-6 min-h-screen mb-5">
-      {/* {followingUsers.map((user) => {
-        return (
-          <FollowingUsers
-            key={user?.userId}
-            user={user}
-            handleUnfollow={handleUnfollow}
+    <>
+      <FollowingModal
+        isFollowingModalOpen={isFollowingModalOpen}
+        setIsFollowingModalOpen={setIsFollowingModalOpen}
+        unfollowUser={handleUnfollow}
+        followingUsers={followingUsers}
+      />
+      <div className="grid grid-cols-1 md:grid-cols-2 md:max-w-3xl xl:grid-cols-5 xl:max-w-6xl mx-auto pt-6 min-h-screen mb-5">
+        <div className="col-span-1 mr-5">
+          <UserProfileData
+            setIsFollowingModalOpen={setIsFollowingModalOpen}
+            showFollowButton={false}
+            followingCount={followingUsers?.length}
+            followersCount={followers?.length}
+            postsCount={userPosts.length}
+            fullName={
+              usernameFromUrl === userData?.displayName
+                ? userData?.fullName
+                : location?.state?.fullName
+            }
           />
-        );
-      })} */}
-      <div className="col-span-1 mr-5">
-        <UserProfileData
-          showFollowButton={false}
-          followingCount={followingUsers?.length}
-          followersCount={followers?.length}
-          postsCount={userPosts.length}
-          fullName={
-            usernameFromUrl === userData?.displayName
-              ? userData?.fullName
-              : location?.state?.fullName
-          }
-        />
+        </div>
+        <div className="col-span-4">
+          {!userPosts.length ? (
+            <NoPostsMessage
+              message="Create your first post"
+              btnText="Create post"
+              btnFunction={() => dispatch(setModal(true))}
+              showCreatePostButton={usernameFromUrl === userData?.displayName}
+            />
+          ) : (
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-x-2 mx-auto w-11/12">
+              {userPosts.map((post) => (
+                <UserPosts key={post?.postId} post={post} />
+              ))}
+            </div>
+          )}
+        </div>
       </div>
-      <div className="col-span-4">
-        {!userPosts.length ? (
-          <NoPostsMessage
-            message="Create your first post"
-            btnText="Create post"
-            btnFunction={() => dispatch(setModal(true))}
-            showCreatePostButton={usernameFromUrl === userData?.displayName}
-          />
-        ) : (
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-x-2 mx-auto w-11/12">
-            {userPosts.map((post) => (
-              <UserPosts key={post?.postId} post={post} />
-            ))}
-          </div>
-        )}
-      </div>
-    </div>
+    </>
   );
 };
 

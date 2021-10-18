@@ -1,4 +1,5 @@
 import { useSelector } from "react-redux";
+import { Link } from "react-router-dom";
 import useGetFollowers from "../helpers/getFollowers";
 
 const FollowingUsers = ({ user, handleUnfollow }) => {
@@ -10,7 +11,13 @@ const FollowingUsers = ({ user, handleUnfollow }) => {
   );
 
   return (
-    <div className="flex">
+    <Link
+      to={{
+        pathname: `/profile/${user?.displayName}`,
+        state: { fullName: user?.fullName },
+      }}
+      className="flex"
+    >
       {user?.displayName}
       <img
         src={
@@ -25,7 +32,7 @@ const FollowingUsers = ({ user, handleUnfollow }) => {
       >
         Unfollow
       </button>
-    </div>
+    </Link>
   );
 };
 
