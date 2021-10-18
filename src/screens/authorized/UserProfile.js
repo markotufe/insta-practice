@@ -18,6 +18,7 @@ import UserProfileData from "../../components/UserProfileData";
 import { useLocation, useParams } from "react-router-dom";
 import NoPostsMessage from "../../components/NoPostsMessage";
 import { setModal } from "../../redux/slices/modalSlice";
+import { getUserByUsername } from "../../helpers/getUserByUsername";
 
 const UserProfile = () => {
   const dispatch = useDispatch();
@@ -27,10 +28,25 @@ const UserProfile = () => {
   let { id: usernameFromUrl } = useParams();
 
   const [userPosts, setUserPosts] = useState([]);
+  const [userFromUrl, setUserFromUrl] = useState({});
+
   const { userData } = useSelector((state) => state.user);
 
-  const { followingUsers } = useGetFollowingUsers(userData?.documentId);
+  const { followingUsers } = useGetFollowingUsers(
+    userData?.documentId,
+    userFromUrl?.documentId
+  );
   const { followers } = useGetFollowers(userData?.documentId);
+
+  useEffect(() => {
+    if (usernameFromUrl) {
+      async function handleGetUserByUsername() {
+        const results = await getUserByUsername(usernameFromUrl);
+        setUserFromUrl(results);
+      }
+      handleGetUserByUsername();
+    }
+  }, [usernameFromUrl]);
 
   useEffect(() => {
     const unsubscribe = onSnapshot(
