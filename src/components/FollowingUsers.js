@@ -1,8 +1,10 @@
-import { useSelector } from "react-redux";
+import { useSelector, useDispatch } from "react-redux";
 import { Link } from "react-router-dom";
 import useGetFollowers from "../helpers/getFollowers";
+import { setFollowingModal } from "../redux/slices/modalSlice";
 
 const FollowingUsers = ({ user, handleUnfollow }) => {
+  const dispatch = useDispatch();
   const { followers } = useGetFollowers(user?.documentId);
   const { userData } = useSelector((state) => state.user);
 
@@ -16,6 +18,7 @@ const FollowingUsers = ({ user, handleUnfollow }) => {
         pathname: `/profile/${user?.displayName}`,
         state: { fullName: user?.fullName },
       }}
+      onClick={() => dispatch(setFollowingModal(false))}
       className="flex"
     >
       {user?.displayName}
