@@ -1,5 +1,8 @@
 import { useDispatch } from "react-redux";
-import { setFollowingModal } from "../redux/slices/modalSlice";
+import {
+  setFollowingModal,
+  setFollowersModal,
+} from "../redux/slices/modalSlice";
 
 const UserProfileData = ({
   showFollowButton,
@@ -27,7 +30,10 @@ const UserProfileData = ({
           <p className="text-lg font-semibold">{postsCount}</p>
           <p className="text-sm text-gray-500">posts</p>
         </div>
-        <div className="cursor-pointer">
+        <div
+          className="cursor-pointer"
+          onClick={() => dispatch(setFollowersModal(true))}
+        >
           <p className="text-lg font-semibold">{followersCount}</p>
           <p className="text-sm text-gray-500">followers</p>
         </div>

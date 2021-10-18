@@ -19,6 +19,7 @@ import { useLocation, useParams } from "react-router-dom";
 import NoPostsMessage from "../../components/NoPostsMessage";
 import { setModal } from "../../redux/slices/modalSlice";
 import { getUserByUsername } from "../../helpers/getUserByUsername";
+import { FollowersModal } from "../../components/FollowersModal";
 
 const UserProfile = () => {
   const dispatch = useDispatch();
@@ -36,7 +37,10 @@ const UserProfile = () => {
     userData?.documentId,
     userFromUrl?.documentId
   );
-  const { followers } = useGetFollowers(userData?.documentId);
+  const { followers } = useGetFollowers(
+    userData?.documentId,
+    userFromUrl?.documentId
+  );
 
   useEffect(() => {
     if (usernameFromUrl) {
@@ -83,6 +87,7 @@ const UserProfile = () => {
         unfollowUser={handleUnfollow}
         followingUsers={followingUsers}
       />
+      <FollowersModal unfollowUser={handleUnfollow} followers={followers} />
       <div className="grid grid-cols-1 md:grid-cols-2 md:max-w-3xl xl:grid-cols-5 xl:max-w-6xl mx-auto pt-6 min-h-screen mb-5">
         <div className="col-span-1 mr-5">
           <UserProfileData
