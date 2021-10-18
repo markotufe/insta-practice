@@ -52,7 +52,10 @@ const Posts = () => {
           </p>
         </div>
       ) : !posts.length ? (
-        <NoPostsMessage />
+        <NoPostsMessage
+          message="Follow friends to get posts"
+          btnText="Explore"
+        />
       ) : (
         posts.map((post) => <Post key={post?.postId} post={post} />)
       )}

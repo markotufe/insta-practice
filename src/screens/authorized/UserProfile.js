@@ -1,6 +1,6 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 import { useEffect, useState } from "react";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import useGetFollowingUsers from "../../helpers/getFollowingUsers";
 import useGetFollowers from "../../helpers/getFollowers";
 import FollowingUsers from "../../components/FollowingUsers";
@@ -16,8 +16,12 @@ import {
 import { db } from "../../firebase";
 import UserProfileData from "../../components/UserProfileData";
 import { useLocation, useParams } from "react-router-dom";
+import NoPostsMessage from "../../components/NoPostsMessage";
+import { setModal } from "../../redux/slices/modalSlice";
 
 const UserProfile = () => {
+  const dispatch = useDispatch();
+
   const location = useLocation();
   let { id: usernameFromUrl } = useParams();
 
@@ -79,11 +83,19 @@ const UserProfile = () => {
         />
       </div>
       <div className="col-span-4">
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-x-2 mx-auto w-11/12">
-          {userPosts.map((post) => (
-            <UserPosts key={post?.postId} post={post} />
-          ))}
-        </div>
+        {!userPosts.length ? (
+          <NoPostsMessage
+            message="Create your first post"
+            btnText="Create post"
+            btnFunction={() => dispatch(setModal(true))}
+          />
+        ) : (
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-x-2 mx-auto w-11/12">
+            {userPosts.map((post) => (
+              <UserPosts key={post?.postId} post={post} />
+            ))}
+          </div>
+        )}
       </div>
     </div>
   );
