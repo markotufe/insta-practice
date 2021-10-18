@@ -8,25 +8,27 @@ const Followers = ({ user, handleUnfollow, handleFollow, followingUsers }) => {
   const { followers } = useGetFollowers(user?.documentId);
   const { userData } = useSelector((state) => state.user);
 
-  const activeUser = followers.find(
+  const activeUser = followers?.find(
     (user) => user?.userId === userData?.userId
   );
 
+  console.log(user, activeUser?.followerDocumentId);
+
   const isFollowing =
-    followingUsers.find(
+    followingUsers?.find(
       (followingUser) => followingUser?.userId === user?.userId
     ) !== undefined;
 
   return (
-    <Link
-      to={{
-        pathname: `/profile/${user?.displayName}`,
-        state: { fullName: user?.fullName },
-      }}
-      onClick={() => dispatch(setFollowersModal(false))}
-      className="flex items-center justify-between outline-none border-b-2 border-opacity-40 py-2"
-    >
-      <div className="flex items-center flex-1">
+    <div className="flex items-center justify-between border-b-2 border-opacity-40 py-2">
+      <Link
+        to={{
+          pathname: `/profile/${user?.displayName}`,
+          state: { fullName: user?.fullName },
+        }}
+        onClick={() => dispatch(setFollowersModal(false))}
+        className="flex items-center outline-none"
+      >
         <img
           src={
             user?.photoURL ??
@@ -39,7 +41,7 @@ const Followers = ({ user, handleUnfollow, handleFollow, followingUsers }) => {
           <p className="font-bold text-sm">{user?.displayName}</p>
           <p className="text-gray-400">{user?.fullName}</p>
         </div>
-      </div>
+      </Link>
 
       {isFollowing ? (
         <button
@@ -51,12 +53,12 @@ const Followers = ({ user, handleUnfollow, handleFollow, followingUsers }) => {
       ) : (
         <button
           className="text-blue-500 font-bold"
-          onClick={() => handleUnfollow(user, activeUser?.followerDocumentId)}
+          onClick={() => handleFollow(user)}
         >
           Follow
         </button>
       )}
-    </Link>
+    </div>
   );
 };
 

@@ -6,7 +6,7 @@ import Followers from "./Followers";
 
 export const FollowersModal = ({
   unfollowUser,
-  followUser,
+  handleFollow,
   followers,
   followingUsers,
 }) => {
@@ -58,7 +58,7 @@ export const FollowersModal = ({
                       key={user?.userId}
                       user={user}
                       handleUnfollow={unfollowUser}
-                      handleFollow={followUser}
+                      handleFollow={handleFollow}
                       followingUsers={followingUsers}
                     />
                   );

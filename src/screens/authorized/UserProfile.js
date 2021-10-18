@@ -5,7 +5,7 @@ import useGetFollowingUsers from "../../helpers/getFollowingUsers";
 import useGetFollowers from "../../helpers/getFollowers";
 import { FollowingModal } from "../../components/FollowingModal";
 import UserPosts from "../../components/UserPosts";
-import { unfollowUser } from "../../helpers/followUnfollowUser";
+import { followUser, unfollowUser } from "../../helpers/followUnfollowUser";
 import {
   collection,
   onSnapshot,
@@ -81,6 +81,10 @@ const UserProfile = () => {
     );
   };
 
+  const handleFollow = async (userToFollow) => {
+    await followUser(userData, userToFollow);
+  };
+
   return (
     <>
       <FollowingModal
@@ -91,6 +95,7 @@ const UserProfile = () => {
         unfollowUser={handleUnfollow}
         followers={followers}
         followingUsers={followingUsers}
+        handleFollow={handleFollow}
       />
       <div className="grid grid-cols-1 md:grid-cols-2 md:max-w-3xl xl:grid-cols-5 xl:max-w-6xl mx-auto pt-6 min-h-screen mb-5">
         <div className="col-span-1 mr-5">

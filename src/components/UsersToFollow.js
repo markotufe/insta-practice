@@ -1,8 +1,6 @@
 import { Link } from "react-router-dom";
 
 const UsersToFollow = ({ user, handleFollow }) => {
-  // console.log(user);
-
   return (
     <div className="w-full flex flex-col  items-center justify-between bg-white">
       {/* cover */}

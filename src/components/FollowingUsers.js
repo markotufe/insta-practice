@@ -13,15 +13,15 @@ const FollowingUsers = ({ user, handleUnfollow }) => {
   );
 
   return (
-    <Link
-      to={{
-        pathname: `/profile/${user?.displayName}`,
-        state: { fullName: user?.fullName },
-      }}
-      onClick={() => dispatch(setFollowingModal(false))}
-      className="flex items-center justify-between outline-none border-b-2 border-opacity-40 py-2"
-    >
-      <div className="flex items-center flex-1">
+    <div className="flex items-center justify-between border-b-2 border-opacity-40 py-2">
+      <Link
+        to={{
+          pathname: `/profile/${user?.displayName}`,
+          state: { fullName: user?.fullName },
+        }}
+        onClick={() => dispatch(setFollowingModal(false))}
+        className="flex items-center outline-none"
+      >
         <img
           src={
             user?.photoURL ??
@@ -34,7 +34,7 @@ const FollowingUsers = ({ user, handleUnfollow }) => {
           <p className="font-bold text-sm">{user?.displayName}</p>
           <p className="text-gray-400">{user?.fullName}</p>
         </div>
-      </div>
+      </Link>
 
       <button
         className="text-blue-500 font-bold"
@@ -42,7 +42,7 @@ const FollowingUsers = ({ user, handleUnfollow }) => {
       >
         Unfollow
       </button>
-    </Link>
+    </div>
   );
 };
 

@@ -33,6 +33,28 @@ export async function unfollowUser(
   userToUnfollow,
   activeUserDocumentIdInFollowers
 ) {
+  console.log(activeUser, userToUnfollow, activeUserDocumentIdInFollowers);
+
+  // await deleteDoc(
+  //   doc(
+  //     db,
+  //     "users",
+  //     activeUser?.documentId,
+  //     "followers",
+  //     userToUnfollow?.followerDocumentId
+  //   )
+  // );
+
+  // await deleteDoc(
+  //   doc(
+  //     db,
+  //     "users",
+  //     userToUnfollow?.followerDocumentId,
+  //     "followers",
+  //     activeUserDocumentIdInFollowers
+  //   )
+  // );
+
   try {
     await deleteDoc(
       doc(
