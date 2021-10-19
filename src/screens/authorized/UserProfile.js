@@ -72,12 +72,16 @@ const UserProfile = () => {
 
   const handleUnfollow = async (
     userToUnfollow,
-    activeUserDocumentIdInFollowers
+    activeUserDocumentIdInFollowers,
+    unfollowFromFollowers,
+    activeUserInFollowerFollowing
   ) => {
     await unfollowUser(
       userData,
       userToUnfollow,
-      activeUserDocumentIdInFollowers
+      activeUserDocumentIdInFollowers,
+      unfollowFromFollowers,
+      activeUserInFollowerFollowing
     );
   };
 
@@ -96,6 +100,7 @@ const UserProfile = () => {
         followers={followers}
         followingUsers={followingUsers}
         handleFollow={handleFollow}
+        userFromUrlDocumentId={userFromUrl?.documentId}
       />
       <div className="grid grid-cols-1 md:grid-cols-2 md:max-w-3xl xl:grid-cols-5 xl:max-w-6xl mx-auto pt-6 min-h-screen mb-5">
         <div className="col-span-1 mr-5">

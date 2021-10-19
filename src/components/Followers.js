@@ -1,18 +1,26 @@
 import { useSelector, useDispatch } from "react-redux";
 import { Link } from "react-router-dom";
 import useGetFollowers from "../helpers/getFollowers";
+import useGetFollowingUsers from "../helpers/getFollowingUsers";
 import { setFollowersModal } from "../redux/slices/modalSlice";
 
 const Followers = ({ user, handleUnfollow, handleFollow, followingUsers }) => {
   const dispatch = useDispatch();
   const { followers } = useGetFollowers(user?.documentId);
+  const { followingUsers: followingUsersMyFollower } = useGetFollowingUsers(
+    user?.documentId
+  );
   const { userData } = useSelector((state) => state.user);
+
+  const unfollowFromFollowers = true;
 
   const activeUser = followers?.find(
     (user) => user?.userId === userData?.userId
   );
 
-  console.log(user, activeUser?.followerDocumentId);
+  const activeUserInFollowerFollowing = followingUsersMyFollower?.find(
+    (user) => user?.userId === userData?.userId
+  );
 
   const isFollowing =
     followingUsers?.find(
@@ -46,9 +54,16 @@ const Followers = ({ user, handleUnfollow, handleFollow, followingUsers }) => {
       {isFollowing ? (
         <button
           className="text-blue-500 font-bold"
-          onClick={() => handleUnfollow(user, activeUser?.followerDocumentId)}
+          onClick={() =>
+            handleUnfollow(
+              user,
+              activeUser?.followerDocumentId,
+              unfollowFromFollowers,
+              activeUserInFollowerFollowing?.followingDocumentId
+            )
+          }
         >
-          Unfollow
+          Remove follower
         </button>
       ) : (
         <button
