@@ -15,7 +15,7 @@ const UsersToFollow = ({ user, handleFollow }) => {
       <div className="flex items-center justify-between w-full mt-3">
         <Link
           to={{
-            pathname: `/profile/${user?.displayName}`,
+            pathname: `/user/${user?.displayName}`,
             state: { fullName: user?.fullName },
           }}
           className="flex items-center cursor-pointer"

@@ -1,3 +1,4 @@
+import { useEffect, useState } from "react";
 import {
   SearchIcon,
   PlusCircleIcon,
@@ -12,11 +13,38 @@ import { setModal } from "../redux/slices/modalSlice";
 import { useDispatch } from "react-redux";
 import { Link } from "react-router-dom";
 import { useSelector } from "react-redux";
+import { getUserByUsername } from "../helpers/getUserByUsername";
 
 function Header() {
   const dispatch = useDispatch();
   const history = useHistory();
   const { displayName } = useSelector((state) => state.user.userData);
+  const [searchQuery, setSearchQuery] = useState("");
+  const [result, setResult] = useState();
+
+  const handleSearchQuery = async () => {
+    const result = await getUserByUsername(searchQuery.toLowerCase());
+    setResult(result);
+  };
+
+  useEffect(() => {
+    if (searchQuery) {
+      const delayDebounceFn = setTimeout(() => {
+        handleSearchQuery();
+      }, 1000);
+
+      return () => clearTimeout(delayDebounceFn);
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [searchQuery]);
+
+  const renderList = () => {
+    return (
+      <ul className="list-none border absolute bg-white mx-auto py-2 px-2 shadow-2xl rounded">
+        {result?.displayName}
+      </ul>
+    );
+  };
 
   return (
     <div className="shadow-sm border-b bg-white sticky top-0 z-50">
@@ -44,21 +72,24 @@ function Header() {
           />
         </div>
         {/* middle search input filed */}
-        <div className="max-w-xs">
+        <div className="max-w-sm">
           <div className="relative mt-1 p-3 rounded-m">
             <div className="absolute inset-y-0 pl-3 flex items-center pointer-events-none">
-              <SearchIcon className="h-5 w-5 text-gray-400" />
+              <SearchIcon className="h-5 w-5 text-gray-400 z-20" />
             </div>
             <input
               type="text"
-              placeholder="Search"
+              placeholder="Search user"
               className="
                 bg-gray-50 block w-full pl-10 sm:text-sm
                 border-gray-300 focus:ring-black
                 focus:border-black rounded-md
               "
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
             />
           </div>
+          {searchQuery && renderList()}
         </div>
 
         {/* right */}

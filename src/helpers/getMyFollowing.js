@@ -33,7 +33,7 @@ export default function useGetMyFollowing(userDocumentId) {
       }
     );
     return unsubscribe;
-  }, [userDocumentId, dispatch, myFollowingIds.length]);
+  }, [userDocumentId, dispatch]);
 
   return { loading, myFollowingIds };
 }
