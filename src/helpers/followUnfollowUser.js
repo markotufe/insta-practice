@@ -1,10 +1,4 @@
-import {
-  collection,
-  addDoc,
-  deleteDoc,
-  serverTimestamp,
-  doc,
-} from "@firebase/firestore";
+import { collection, addDoc, deleteDoc, doc } from "@firebase/firestore";
 import { db } from "../firebase";
 
 //follow user
@@ -12,14 +6,14 @@ export async function followUser(activeUser, userToFollow) {
   try {
     await addDoc(collection(db, "users", activeUser?.documentId, "following"), {
       ...userToFollow,
-      timestamp: serverTimestamp(),
+      timestamp: Date.now(),
     });
 
     await addDoc(
       collection(db, "users", userToFollow?.documentId, "followers"),
       {
         ...activeUser,
-        timestamp: serverTimestamp(),
+        timestamp: Date.now(),
       }
     );
   } catch (error) {
@@ -39,8 +33,7 @@ export async function unfollowUser(
   activeUser,
   userToUnfollow,
   activeUserDocumentIdInFollowers,
-  unfollowFromFollowers,
-  activeUserDocumentIdInFollowersDeleteFromFollowersFollowing
+  unfollowFromFollowers
 ) {
   if (unfollowFromFollowers) {
     try {
@@ -60,7 +53,7 @@ export async function unfollowUser(
           "users",
           userToUnfollow?.documentId,
           "following",
-          activeUserDocumentIdInFollowersDeleteFromFollowersFollowing
+          activeUserDocumentIdInFollowers
         )
       );
     } catch (error) {
@@ -74,10 +67,9 @@ export async function unfollowUser(
           "users",
           activeUser?.documentId,
           "following",
-          userToUnfollow?.followingDocumentId
+          userToUnfollow?.followerDocumentId
         )
       );
-
       await deleteDoc(
         doc(
           db,

@@ -1,11 +1,6 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import useGetFollowingUsers from "../../helpers/getFollowingUsers";
-import useGetFollowers from "../../helpers/getFollowers";
-import { FollowingModal } from "../../components/FollowingModal";
-import UserPosts from "../../components/UserPosts";
-import { followUser, unfollowUser } from "../../helpers/followUnfollowUser";
 import {
   collection,
   onSnapshot,
@@ -14,32 +9,31 @@ import {
   where,
 } from "@firebase/firestore";
 import { db } from "../../firebase";
-import UserProfileData from "../../components/UserProfileData";
-import { useLocation, useParams } from "react-router-dom";
-import NoPostsMessage from "../../components/NoPostsMessage";
+import { useParams } from "react-router-dom";
 import { setModal } from "../../redux/slices/modalSlice";
 import { getUserByUsername } from "../../helpers/getUserByUsername";
-import { FollowersModal } from "../../components/FollowersModal";
+import { FollowersModal } from "../../components/UserProfile/UserFollowersModal";
+import { FollowingModal } from "../../components/UserProfile/UserFollowingModal";
+import { followUser, unfollowUser } from "../../helpers/followUnfollowUser";
+import UserProfileData from "../../components/UserProfile/UserProfileData";
+import UserPosts from "../../components/UserProfile/UserPosts";
+import NoPostsMessage from "../../components/NoPostsMessage";
+import getUserFollowing from "../../helpers/getUserFollowing";
+import getUserFollowers from "../../helpers/getUserFollowers";
+import getMyFollowing from "../../helpers/getMyFollowing";
+import findMeInUserFollowers from "../../helpers/findMeInUserFollowers";
 
 const UserProfile = () => {
   const dispatch = useDispatch();
-
-  const location = useLocation();
-
   let { id: usernameFromUrl } = useParams();
 
   const [userPosts, setUserPosts] = useState([]);
-  const [userFromUrl, setUserFromUrl] = useState({});
+  const [userFromUrl, setUserFromUrl] = useState();
 
-  const { userData } = useSelector((state) => state.user);
+  const { followers, following } = useSelector((state) => state.users);
 
-  const { followingUsers } = useGetFollowingUsers(
-    userData?.documentId,
-    userFromUrl?.documentId
-  );
-  const { followers } = useGetFollowers(
-    userData?.documentId,
-    userFromUrl?.documentId
+  const { userData, following: myFollowing } = useSelector(
+    (state) => state.user
   );
 
   useEffect(() => {
@@ -53,67 +47,59 @@ const UserProfile = () => {
   }, [usernameFromUrl]);
 
   useEffect(() => {
-    const unsubscribe = onSnapshot(
-      query(
-        collection(db, "posts"),
-        where(
-          "creatorDisplayName",
-          "==",
-          usernameFromUrl ?? userData?.displayName
+    if (userFromUrl) {
+      const unsubscribe = onSnapshot(
+        query(
+          collection(db, "posts"),
+          where("creatorDisplayName", "==", userFromUrl?.displayName),
+          orderBy("timestamp", "desc")
         ),
-        orderBy("timestamp", "desc")
-      ),
-      (snapshot) => {
-        setUserPosts(snapshot.docs.map((doc) => ({ ...doc.data() })));
-      }
-    );
-    return unsubscribe;
-  }, [usernameFromUrl, userData?.displayName]);
+        (snapshot) => {
+          setUserPosts(snapshot.docs.map((doc) => ({ ...doc.data() })));
+        }
+      );
+      return unsubscribe;
+    }
+  }, [userFromUrl]);
 
-  const handleUnfollow = async (
-    userToUnfollow,
-    activeUserDocumentIdInFollowers,
-    unfollowFromFollowers,
-    activeUserInFollowerFollowing
-  ) => {
+  getUserFollowing(userFromUrl?.documentId);
+  getUserFollowers(userFromUrl?.documentId);
+  getMyFollowing(userData?.documentId);
+
+  const activeUserFollowingProfileData = myFollowing?.listOfFollowing.find(
+    (user) => user?.userId === userFromUrl?.userId
+  );
+
+  const { myDocumentInUserFollowers } = findMeInUserFollowers(
+    userFromUrl?.documentId
+  );
+
+  const handleUnfollow = async () => {
     await unfollowUser(
       userData,
-      userToUnfollow,
-      activeUserDocumentIdInFollowers,
-      unfollowFromFollowers,
-      activeUserInFollowerFollowing
+      activeUserFollowingProfileData,
+      myDocumentInUserFollowers
     );
   };
 
-  const handleFollow = async (userToFollow) => {
-    await followUser(userData, userToFollow);
+  const handleFollow = async () => {
+    await followUser(userData, userFromUrl);
   };
 
   return (
     <>
-      <FollowingModal
-        unfollowUser={handleUnfollow}
-        followingUsers={followingUsers}
-      />
-      <FollowersModal
-        unfollowUser={handleUnfollow}
-        followers={followers}
-        followingUsers={followingUsers}
-        handleFollow={handleFollow}
-        userFromUrlDocumentId={userFromUrl?.documentId}
-      />
+      <FollowingModal followingUsers={following?.listOfFollowing} />
+      <FollowersModal followers={followers?.listOfFollowers} />
       <div className="grid grid-cols-1 md:grid-cols-2 md:max-w-3xl xl:grid-cols-5 xl:max-w-6xl mx-auto pt-6 min-h-screen mb-5">
         <div className="col-span-1 mr-5">
           <UserProfileData
-            showFollowButton={usernameFromUrl !== userData?.displayName}
-            followingCount={followingUsers?.length}
-            followersCount={followers?.length}
-            postsCount={userPosts.length}
-            fullName={
-              usernameFromUrl === userData?.displayName
-                ? userData?.fullName
-                : location?.state?.fullName
-            }
+            followingCount={following?.listOfFollowing?.length}
+            followersCount={followers?.listOfFollowers?.length}
+            postsCount={userPosts?.length}
+            fullName={userFromUrl?.fullName}
+            isActiveUserFollowingProfile={activeUserFollowingProfileData}
+            handleFollow={handleFollow}
+            handleUnfollow={handleUnfollow}
           />
         </div>
         <div className="col-span-4">

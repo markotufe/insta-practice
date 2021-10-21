@@ -12,6 +12,12 @@ const userSlice = createSlice({
       fullName: "",
     },
     isRegistered: false,
+    followers: {
+      listOfFollowers: [],
+    },
+    following: {
+      listOfFollowing: [],
+    },
   },
   reducers: {
     setUser(state, action) {
@@ -20,9 +26,20 @@ const userSlice = createSlice({
     setIsRegistered(state, action) {
       state.isRegistered = action.payload;
     },
+    setMyFollowers(state, action) {
+      state.followers = {
+        listOfFollowers: action.payload.listOfFollowers,
+      };
+    },
+    setMyFollowing(state, action) {
+      state.following = {
+        listOfFollowing: action.payload.listOfFollowing,
+      };
+    },
   },
 });
 
-export const { setUser, setIsRegistered } = userSlice.actions;
+export const { setUser, setIsRegistered, setMyFollowers, setMyFollowing } =
+  userSlice.actions;
 
 export default userSlice.reducer;

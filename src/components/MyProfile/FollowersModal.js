@@ -1,15 +1,10 @@
 import { Dialog, Transition } from "@headlessui/react";
 import { Fragment } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { setFollowersModal } from "../redux/slices/modalSlice";
-import Followers from "./Followers";
+import { setFollowersModal } from "../../redux/slices/modalSlice";
+import Followers from "./MyFollowers";
 
-export const FollowersModal = ({
-  unfollowUser,
-  handleFollow,
-  followers,
-  followingUsers,
-}) => {
+export const FollowersModal = ({ followers }) => {
   const dispatch = useDispatch();
   const isFollowersModalOpen = useSelector(
     (state) => state.modal.isFollowersModalOpen
@@ -52,15 +47,9 @@ export const FollowersModal = ({
             <div className="inline-block align-bottom bg-white rounded-lg px-4 pt-5 pb-4 text-left overflow-hidden transform transition-all sm:my-8 sm:align-middle sm:max-w-sm sm:w-full sm:p-6">
               <h1 className="mb-4 font-semibold text-xl">Followers</h1>
               <div className="overflow-y-scroll scrollbar-thumb-black scrollbar-thin h-64">
-                {followers.map((user) => {
+                {followers.map((follower) => {
                   return (
-                    <Followers
-                      key={user?.userId}
-                      user={user}
-                      handleUnfollow={unfollowUser}
-                      handleFollow={handleFollow}
-                      followingUsers={followingUsers}
-                    />
+                    <Followers key={follower?.userId} follower={follower} />
                   );
                 })}
               </div>

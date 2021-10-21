@@ -1,4 +1,4 @@
-import useGetCommentsAndLikesForPost from "../helpers/getCommentsAndLikesForPost";
+import useGetCommentsAndLikesForPost from "../../helpers/getCommentsAndLikesForPost";
 import { HeartIcon, ChatIcon } from "@heroicons/react/solid";
 
 const UserPosts = ({ post }) => {

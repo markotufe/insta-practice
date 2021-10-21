@@ -29,6 +29,7 @@ import { Picker } from "emoji-mart";
 import { useSelector } from "react-redux";
 
 import useGetCommentsAndLikesForPost from "../helpers/getCommentsAndLikesForPost";
+import { Link } from "react-router-dom";
 
 const Post = ({ post }) => {
   const [comment, setComment] = useState("");
@@ -145,7 +146,12 @@ const Post = ({ post }) => {
           alt="user"
           className="rounded-full h-12 w-12 object-contain p-1 mr-3 border"
         />
-        <p className="flex-1 font-bold">{post?.creatorDisplayName}</p>
+        <Link
+          to={`/user/${post?.creatorDisplayName}`}
+          className="flex-1 font-bold"
+        >
+          {post?.creatorDisplayName}
+        </Link>
         {userId === post?.creatorId && (
           <TrashIcon className="h-5 cursor-pointer" onClick={deletePost} />
         )}
@@ -175,11 +181,18 @@ const Post = ({ post }) => {
       {/* caption */}
       <p className="p-5 truncate">
         {likes.length > 0 ? (
-          <span className="font-bold mb-1 block">{likes.length} likes</span>
+          <span className="font-bold mb-1 block">
+            {likes.length > 1 ? `${likes.length} likes` : "1 like"}
+          </span>
         ) : (
           <span className="font-bold mb-1 block">0 likes</span>
         )}
-        <span className="font-bold mr-1">{post?.creatorDisplayName}</span>{" "}
+        <Link
+          to={`/user/${post?.creatorDisplayName}`}
+          className="font-bold mr-1"
+        >
+          <span className="font-bold mr-1">{post?.creatorDisplayName}</span>
+        </Link>
         {post?.caption}
       </p>
 
@@ -201,9 +214,18 @@ const Post = ({ post }) => {
                   className="h-7 rounded-full"
                 />
                 <p className="text-sm flex-1 flex items-center">
-                  <span className="font-bold mr-[5px]">
-                    {comment.creatorDisplayName}
-                  </span>
+                  <Link
+                    to={
+                      comment?.creatorDisplayName === displayName
+                        ? `/my-profile/${comment?.creatorDisplayName}`
+                        : `/user/${comment?.creatorDisplayName}`
+                    }
+                    className="font-bold"
+                  >
+                    <span className="font-bold mr-[5px]">
+                      {comment.creatorDisplayName}
+                    </span>
+                  </Link>
                   {comment.comment}
                   {(userId === comment.creatorId ||
                     userId === post?.creatorId) && (

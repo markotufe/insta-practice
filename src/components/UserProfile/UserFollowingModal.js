@@ -1,10 +1,10 @@
 import { Dialog, Transition } from "@headlessui/react";
 import { Fragment } from "react";
-import FollowingUsers from "./FollowingUsers";
+import FollowingUsers from "./UserFollowing";
 import { useDispatch, useSelector } from "react-redux";
-import { setFollowingModal } from "../redux/slices/modalSlice";
+import { setFollowingModal } from "../../redux/slices/modalSlice";
 
-export const FollowingModal = ({ unfollowUser, followingUsers }) => {
+export const FollowingModal = ({ followingUsers }) => {
   const dispatch = useDispatch();
   const isFollowingModalOpen = useSelector(
     (state) => state.modal.isFollowingModalOpen
@@ -47,12 +47,11 @@ export const FollowingModal = ({ unfollowUser, followingUsers }) => {
             <div className="inline-block align-bottom bg-white rounded-lg px-4 pt-5 pb-4 text-left overflow-hidden transform transition-all sm:my-8 sm:align-middle sm:max-w-sm sm:w-full sm:p-6">
               <h1 className="mb-4 font-semibold text-xl">Following</h1>
               <div className="overflow-y-scroll scrollbar-thumb-black scrollbar-thin h-64">
-                {followingUsers.map((user) => {
+                {followingUsers.map((followingUser) => {
                   return (
                     <FollowingUsers
-                      key={user?.userId}
-                      user={user}
-                      handleUnfollow={unfollowUser}
+                      key={followingUser?.userId}
+                      followingUser={followingUser}
                     />
                   );
                 })}

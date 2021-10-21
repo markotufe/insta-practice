@@ -2,14 +2,16 @@ import { useDispatch } from "react-redux";
 import {
   setFollowingModal,
   setFollowersModal,
-} from "../redux/slices/modalSlice";
+} from "../../redux/slices/modalSlice";
 
 const UserProfileData = ({
-  showFollowButton,
   followingCount,
   followersCount,
   postsCount,
   fullName,
+  isActiveUserFollowingProfile,
+  handleFollow,
+  handleUnfollow,
 }) => {
   const dispatch = useDispatch();
 
@@ -46,19 +48,21 @@ const UserProfileData = ({
         </div>
       </div>
       <div className="w-full">
-        {showFollowButton ? (
+        {isActiveUserFollowingProfile ? (
           <button
+            onClick={handleUnfollow}
             type="submit"
-            className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded disabled:cursor-not-allowed disabled:opacity-50 w-full mt-5"
+            className="bg-red-500 hover:bg-red-300 text-white font-bold py-2 px-4 rounded w-full mt-5"
           >
-            Follow
+            Unfollow
           </button>
         ) : (
           <button
+            onClick={handleFollow}
             type="submit"
-            className="bg-gray-300 hover:bg-gray-400 text-gray-800 font-bold py-2 px-4 rounded w-full mt-5"
+            className="bg-blue-500 hover:bg-blue-300 text-white font-bold py-2 px-4 rounded w-full mt-5"
           >
-            Edit Profile
+            Follow
           </button>
         )}
       </div>

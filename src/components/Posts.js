@@ -11,7 +11,7 @@ import Post from "./Post";
 import { db } from "../firebase";
 import { useSelector } from "react-redux";
 import NoPostsMessage from "./NoPostsMessage";
-import useGetFollowingUsers from "../helpers/getFollowingUsers";
+import getMyFollowing from "../helpers/getMyFollowing";
 import LoaderComponent from "./Loader";
 
 const Posts = () => {
@@ -19,9 +19,7 @@ const Posts = () => {
   const { userData } = useSelector((state) => state.user);
   const [loading, setLoading] = useState(true);
 
-  const { followingUsersArrayOfIds } = useGetFollowingUsers(
-    userData?.documentId
-  );
+  const { myFollowingIds } = getMyFollowing(userData?.documentId);
 
   useEffect(() => {
     const unsubscribe = onSnapshot(
@@ -30,7 +28,7 @@ const Posts = () => {
         where(
           "creatorId",
           "in",
-          !followingUsersArrayOfIds.length ? ["-"] : followingUsersArrayOfIds
+          !myFollowingIds?.length ? ["-"] : myFollowingIds
         ),
         orderBy("timestamp", "desc")
       ),
@@ -40,7 +38,7 @@ const Posts = () => {
       }
     );
     return unsubscribe;
-  }, [followingUsersArrayOfIds.length]);
+  }, [myFollowingIds?.length]);
 
   return (
     <div>
