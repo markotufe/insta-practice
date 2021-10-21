@@ -71,7 +71,8 @@ const UserProfile = () => {
   );
 
   const { myDocumentInUserFollowers } = findMeInUserFollowers(
-    userFromUrl?.documentId
+    userFromUrl?.documentId,
+    userData?.userId
   );
 
   const handleUnfollow = async () => {
