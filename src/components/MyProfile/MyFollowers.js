@@ -14,7 +14,8 @@ const Followers = ({ follower }) => {
     ) !== undefined;
 
   const { myDocumentInUserFollowing } = findMeInUserFollowing(
-    follower?.documentId
+    follower?.documentId,
+    userData?.userId
   );
 
   const handleUnfollow = async () => {

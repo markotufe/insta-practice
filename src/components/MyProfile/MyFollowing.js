@@ -7,8 +7,10 @@ import { unfollowUser } from "../../helpers/followUnfollowUser";
 const FollowingUsers = ({ followingUser }) => {
   const dispatch = useDispatch();
   const { userData } = useSelector((state) => state.user);
+
   const { myDocumentInUserFollowers } = findMeInUserFollowers(
-    followingUser?.documentId
+    followingUser?.documentId,
+    userData?.userId
   );
 
   const handleUnfollow = async () => {
