@@ -8,7 +8,8 @@ const FollowingUsers = ({ followingUser }) => {
   const dispatch = useDispatch();
   const { userData, following } = useSelector((state) => state.user);
   const { myDocumentInUserFollowers } = findMeInUserFollowers(
-    followingUser?.documentId
+    followingUser?.documentId,
+    userData?.userId
   );
 
   const isActiveUser = followingUser?.userId === userData?.userId;

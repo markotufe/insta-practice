@@ -7,8 +7,6 @@ export const OnePostModal = ({ post, setSelectedPost }) => {
   const dispatch = useDispatch();
   const isPostModalOpen = useSelector((state) => state.modal.isPostModalOpen);
 
-  console.log(post);
-
   return (
     <Modal
       open={isPostModalOpen}

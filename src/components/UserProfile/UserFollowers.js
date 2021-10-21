@@ -13,14 +13,14 @@ const Followers = ({ follower }) => {
   );
 
   const { myDocumentInUserFollowers } = findMeInUserFollowers(
-    follower?.documentId
+    follower?.documentId,
+    userData?.userId
   );
 
   const isActiveUser = follower?.userId === userData?.userId;
 
   const handleUnfollow = async () => {
     await unfollowUser(userData, doIFollowUser, myDocumentInUserFollowers);
-    console.log("hee");
   };
 
   const handleFollow = async () => {
