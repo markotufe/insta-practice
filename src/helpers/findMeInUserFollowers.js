@@ -28,7 +28,7 @@ export default function useFindMeInUserFollowers(userDocumentId, activeUserId) {
       );
       return unsubscribe;
     }
-  }, [userDocumentId, dispatch]);
+  }, [userDocumentId, dispatch, activeUserId]);
 
   return { loading, myDocumentInUserFollowers };
 }

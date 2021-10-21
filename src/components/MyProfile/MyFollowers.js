@@ -47,21 +47,23 @@ const Followers = ({ follower }) => {
         </div>
       </Link>
 
-      {doIFollowMyFollower ? (
+      <div className="flex flex-col">
         <button
           className="text-red-500 font-bold"
           onClick={() => handleUnfollow()}
         >
           Remove follower
         </button>
-      ) : (
-        <button
-          className="text-blue-500 font-bold"
-          onClick={() => handleFollow()}
-        >
-          Follow
-        </button>
-      )}
+
+        {!doIFollowMyFollower && (
+          <button
+            className="text-blue-500 font-bold bg-blue-200 mt-2 rounded"
+            onClick={() => handleFollow()}
+          >
+            Follow
+          </button>
+        )}
+      </div>
     </div>
   );
 };
