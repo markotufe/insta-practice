@@ -1,11 +1,20 @@
 import useGetCommentsAndLikesForPost from "../../helpers/getCommentsAndLikesForPost";
 import { HeartIcon, ChatIcon } from "@heroicons/react/solid";
+import { useDispatch } from "react-redux";
+import { setIsPostModalOpen } from "../../redux/slices/modalSlice";
 
-const UserPosts = ({ post }) => {
+const UserPosts = ({ post, setSelectedPost }) => {
   const { comments, likes } = useGetCommentsAndLikesForPost(post?.postId);
+  const dispatch = useDispatch();
 
   return (
-    <div className="w-full h-70 mt-3 relative group">
+    <div
+      className="w-full h-70 mt-3 relative group"
+      onClick={() => {
+        setSelectedPost(post);
+        dispatch(setIsPostModalOpen(true));
+      }}
+    >
       <img
         src={post?.image}
         alt="photourl"

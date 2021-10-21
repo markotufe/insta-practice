@@ -10,3 +10,10 @@
     @apply h-7 hover:scale-125 cursor-pointer transition-all duration-150 ease-out;
   }
 }
+
+.react-responsive-modal-modal {
+  padding-top: 20px;
+  border-radius: 5px;
+  margin: 0 !important;
+  padding: 0 !important;
+}
