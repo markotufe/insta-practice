@@ -12,7 +12,6 @@ import {
   collection,
   onSnapshot,
   query,
-  serverTimestamp,
   setDoc,
   doc,
   deleteDoc,
@@ -85,7 +84,7 @@ const Post = ({ post }) => {
       creatorDisplayName: displayName,
       creatorId: userId,
       creatorPhotoUrl: photoURL,
-      timestamp: serverTimestamp(),
+      timestamp: Date.now(),
     });
   };
 

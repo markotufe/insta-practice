@@ -18,7 +18,7 @@ const Suggestions = () => {
       </div>
 
       {usersToFollow?.slice(0, 5)?.map((user) => {
-        return <Suggestion key={user?.userId} user={user} />;
+        return <Suggestion key={user?.user?.userId} userToFollow={user} />;
       })}
     </div>
   );

@@ -14,7 +14,6 @@ export async function getUsersToFollowOnePost(userId) {
 
     const results = snapshot.docs.map((doc) => ({
       ...doc.data(),
-      followerDocumentId: doc.id,
     }));
 
     return results[0];

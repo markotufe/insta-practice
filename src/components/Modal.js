@@ -2,13 +2,7 @@ import { Dialog, Transition } from "@headlessui/react";
 import { Fragment, useRef, useState } from "react";
 import { CameraIcon } from "@heroicons/react/outline";
 import { db, storage } from "../firebase";
-import {
-  addDoc,
-  collection,
-  doc,
-  serverTimestamp,
-  updateDoc,
-} from "@firebase/firestore";
+import { addDoc, collection, doc, updateDoc } from "@firebase/firestore";
 import { ref, getDownloadURL, uploadString } from "@firebase/storage";
 import { useSelector } from "react-redux";
 import { setModal } from "../redux/slices/modalSlice";
@@ -41,7 +35,7 @@ export const Modal = () => {
       creatorDisplayName: displayName,
       photoURL: photoURL,
       caption: captionRef?.current?.value,
-      timestamp: serverTimestamp(), //da imamo istu timezonu
+      timestamp: Date.now(),
     });
 
     // console.log("New doc added", docRef.id);

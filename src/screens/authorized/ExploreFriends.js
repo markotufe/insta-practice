@@ -27,8 +27,8 @@ const ExploreFriends = () => {
             <div className="grid grid-cols-1 md:grid-cols-3 gap-5 w-4/5 mx-auto">
               {usersToFollow?.map((user) => (
                 <UsersToFollow
-                  key={user?.userId}
-                  user={user}
+                  key={user?.user?.userId}
+                  userToFollow={user}
                   handleFollow={handleFollow}
                 />
               ))}
