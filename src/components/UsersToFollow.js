@@ -1,14 +1,32 @@
+/* eslint-disable react-hooks/exhaustive-deps */
+import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
+import { getUsersToFollowOnePost } from "../helpers/getUsersToFollowOnePost";
 
 const UsersToFollow = ({ user, handleFollow }) => {
+  const [userToFollowPost, setUserToFollowPost] = useState();
+
+  useEffect(() => {
+    async function handleGetUsersToFollowOnePost() {
+      const result = await getUsersToFollowOnePost(user?.userId);
+      setUserToFollowPost(result);
+    }
+
+    handleGetUsersToFollowOnePost();
+  }, []);
+
   return (
     <div className="w-full flex flex-col  items-center justify-between bg-white">
       {/* cover */}
       <div>
         <img
-          src="https://i2.wp.com/www.stazeibogaze.info/wp-content/uploads/2016/08/default-placeholder.png?fit=1200%2C1200&w=640"
+          src={
+            userToFollowPost?.image ??
+            "https://i2.wp.com/www.stazeibogaze.info/wp-content/uploads/2016/08/default-placeholder.png?fit=1200%2C1200&w=640"
+          }
           alt="photourl"
           className="object-cover rounded-md"
+          style={{ width: "370px", height: "370px" }}
         />
       </div>
       {/* userdata */}
