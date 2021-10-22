@@ -1,17 +1,17 @@
 import { useSelector } from "react-redux";
+import { followUser } from "../../helpers/followUnfollowUser";
 import UsersToFollow from "../../components/UsersToFollow";
 import Loader from "../../components/Loader";
 import getUsersToFollow from "../../helpers/getUsersToFollow";
-import { followUser } from "../../helpers/followUnfollowUser";
 
 const ExploreFriends = () => {
-  const { userData } = useSelector((state) => state.user);
+  const { userData, usersToFollow } = useSelector((state) => state.user);
 
   const handleFollow = async (userToFollow) => {
     await followUser(userData, userToFollow);
   };
 
-  const { usersToFollow, loading } = getUsersToFollow();
+  const { loading } = getUsersToFollow();
 
   return (
     <div className="mb-5">

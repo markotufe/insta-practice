@@ -1,4 +1,5 @@
 import { useSelector } from "react-redux";
+import { Link } from "react-router-dom";
 
 const MiniProfile = () => {
   const { displayName } = useSelector((state) => state.user.userData);
@@ -14,7 +15,9 @@ const MiniProfile = () => {
       />
 
       <div className="flex-1 mx-4">
-        <h2 className="font-bold">{displayName}</h2>
+        <Link to={`/my-profile/${displayName}`} className="font-bold">
+          {displayName}
+        </Link>
         <h3 className="text-sm text-gray-400">Welcome to Instagram</h3>
       </div>
     </div>

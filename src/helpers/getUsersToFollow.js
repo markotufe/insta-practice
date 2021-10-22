@@ -2,11 +2,12 @@
 import { useEffect, useState } from "react";
 import { collection, onSnapshot, query, where } from "@firebase/firestore";
 import { db } from "../firebase";
-import { useSelector } from "react-redux";
+import { setUsersToFollow } from "../redux/slices/userSlice";
+import { useSelector, useDispatch } from "react-redux";
 import getMyFollowing from "../helpers/getMyFollowing";
 
 export default function useGetUsersToFollow() {
-  const [usersToFollow, setUsersToFollow] = useState([]);
+  const dispatch = useDispatch();
   const [loading, setLoading] = useState(true);
   const { userData } = useSelector((state) => state.user);
 
@@ -23,12 +24,12 @@ export default function useGetUsersToFollow() {
           ...doc.data(),
           documentId: doc.id,
         }));
-        setUsersToFollow(results);
+        dispatch(setUsersToFollow(results));
         setLoading(false);
       }
     );
     return unsubscribe;
   }, [myFollowingIds?.length]);
 
-  return { usersToFollow, loading };
+  return { loading };
 }

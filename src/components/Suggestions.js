@@ -1,29 +1,24 @@
-import faker from "faker";
-import { useEffect, useState } from "react";
+import { useSelector } from "react-redux";
+import { Link } from "react-router-dom";
 import Suggestion from "./Suggestion";
+import getUsersToFollow from "../helpers/getUsersToFollow";
 
 const Suggestions = () => {
-  const [suggestions, setSuggestions] = useState([]);
+  getUsersToFollow();
 
-  useEffect(() => {
-    const suggestions = [...Array(5)].map((_, index) => {
-      return {
-        ...faker.helpers.contextualCard(),
-        id: index,
-      };
-    });
-    setSuggestions(suggestions);
-  }, []);
+  const usersToFollow = useSelector((state) => state.user.usersToFollow);
 
   return (
     <div className="mt-4 ml-10">
       <div className="flex justify-between text-sm mb-5">
         <h3 className="text-sm font-bold text-gray-400">Suggestions for you</h3>
-        <button className="text-gray-600 font-semibold">See all</button>
+        <Link to="/explore" className="text-gray-600 font-semibold">
+          See all
+        </Link>
       </div>
 
-      {suggestions.map((profile) => {
-        return <Suggestion key={profile.id} profile={profile} />;
+      {usersToFollow?.slice(0, 5)?.map((user) => {
+        return <Suggestion key={user?.userId} user={user} />;
       })}
     </div>
   );
