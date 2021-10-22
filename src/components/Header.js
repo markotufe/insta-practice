@@ -14,6 +14,7 @@ import { useDispatch } from "react-redux";
 import { Link } from "react-router-dom";
 import { useSelector } from "react-redux";
 import { getUserByUsername } from "../helpers/getUserByUsername";
+import HeaderDropdown from "../components/MyProfile/HeaderDropdown";
 
 function Header() {
   const dispatch = useDispatch();
@@ -96,7 +97,6 @@ function Header() {
         <div className="flex items-center justify-end space-x-4">
           <HomeIcon className="navBtn" onClick={() => history.push("/")} />
           <MenuIcon className="h-6 md:hidden cursor-pointer" />
-
           <div className="relative navBtn">
             <PaperAirplaneIcon className="navBtn" />
             <div className="absolute -top-1 -right-1 text-xs w-5 h-5 bg-red-500 rounded-full flex items-center justify-center animate-pulse text-white">
@@ -111,16 +111,7 @@ function Header() {
             <UserGroupIcon className="navBtn" />
           </Link>
           <HeartIcon className="navBtn" />
-
-          <Link to={`/my-profile/${displayName}`}>
-            <img
-              src={
-                "https://i2.wp.com/www.stazeibogaze.info/wp-content/uploads/2016/08/default-placeholder.png?fit=1200%2C1200&w=640"
-              }
-              alt="profile pic"
-              className="h-10 w-10 rounded-full cursor-pointer"
-            />
-          </Link>
+          <HeaderDropdown displayName={displayName} />
         </div>
       </div>
     </div>
