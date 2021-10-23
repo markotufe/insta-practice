@@ -6,6 +6,7 @@ import { addDoc, collection, doc, updateDoc } from "@firebase/firestore";
 import { ref, getDownloadURL, uploadString } from "@firebase/storage";
 import { useSelector } from "react-redux";
 import { setModal } from "../redux/slices/modalSlice";
+import { setIsCreatingPost } from "../redux/slices/userSlice";
 import { useDispatch } from "react-redux";
 
 export const Modal = () => {
@@ -23,6 +24,7 @@ export const Modal = () => {
     if (loading) return;
 
     setLoading(true);
+    dispatch(setIsCreatingPost(true));
 
     //Kreiramo objau i saljemo u firestore 'posts' kolekciju
     //uzimamo ID posta koji je kreiran
@@ -59,6 +61,7 @@ export const Modal = () => {
     dispatch(setModal(false));
     setLoading(false);
     setSelectedFile(null);
+    dispatch(setIsCreatingPost(false));
 
     //Tok: uploaduje post na firestore kolekciju, onda ce uploadovati sliku na firebase storage, onda ce se vratiti i azurirati dokument koji smo kreirali sa slikom
   };

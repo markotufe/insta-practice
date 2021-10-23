@@ -24,7 +24,9 @@ import MyProfileData from "../../components/MyProfile/MyProfileData";
 const UserProfile = () => {
   let { id: usernameFromUrl } = useParams();
   const dispatch = useDispatch();
-  const { userData, followers, following } = useSelector((state) => state.user);
+  const { userData, followers, following, isCreatingPost } = useSelector(
+    (state) => state.user
+  );
   const [userPosts, setUserPosts] = useState([]);
   const [selectedPost, setSelectedPost] = useState();
 
@@ -32,18 +34,20 @@ const UserProfile = () => {
   getMyFollowers(userData?.documentId);
 
   useEffect(() => {
-    const unsubscribe = onSnapshot(
-      query(
-        collection(db, "posts"),
-        where("creatorDisplayName", "==", userData?.displayName),
-        orderBy("timestamp", "desc")
-      ),
-      (snapshot) => {
-        setUserPosts(snapshot.docs.map((doc) => ({ ...doc.data() })));
-      }
-    );
-    return unsubscribe;
-  }, []);
+    if (!isCreatingPost) {
+      const unsubscribe = onSnapshot(
+        query(
+          collection(db, "posts"),
+          where("creatorDisplayName", "==", userData?.displayName),
+          orderBy("timestamp", "desc")
+        ),
+        (snapshot) => {
+          setUserPosts(snapshot.docs.map((doc) => ({ ...doc.data() })));
+        }
+      );
+      return unsubscribe;
+    }
+  }, [isCreatingPost]);
 
   return (
     <>

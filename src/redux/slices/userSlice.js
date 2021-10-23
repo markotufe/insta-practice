@@ -12,6 +12,7 @@ const userSlice = createSlice({
       fullName: "",
     },
     isRegistered: false,
+    isCreatingPost: false,
     followers: {
       listOfFollowers: [],
     },
@@ -40,6 +41,9 @@ const userSlice = createSlice({
     setUsersToFollow(state, action) {
       state.usersToFollow = action.payload;
     },
+    setIsCreatingPost(state, action) {
+      state.isCreatingPost = action.payload;
+    },
   },
 });
 
@@ -49,6 +53,7 @@ export const {
   setMyFollowers,
   setMyFollowing,
   setUsersToFollow,
+  setIsCreatingPost,
 } = userSlice.actions;
 
 export default userSlice.reducer;
