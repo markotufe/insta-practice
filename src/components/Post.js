@@ -235,7 +235,7 @@ const Post = ({ post }) => {
                   )}
                 </p>
                 <Moment fromNow className="pr-5 text-xs">
-                  {comment.timestamp?.toDate()}
+                  {comment.timestamp}
                 </Moment>
               </div>
             );

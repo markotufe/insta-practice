@@ -110,7 +110,12 @@ function Header() {
           <Link to="/explore">
             <UserGroupIcon className="navBtn" />
           </Link>
-          <HeartIcon className="navBtn" />
+          <div className="relative navBtn">
+            <HeartIcon className="navBtn" />
+            <div className="absolute -top-1 -right-1 text-xs w-5 h-5 bg-red-500 rounded-full flex items-center justify-center animate-pulse text-white">
+              25
+            </div>
+          </div>
           <HeaderDropdown displayName={displayName} />
         </div>
       </div>
