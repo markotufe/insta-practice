@@ -109,7 +109,23 @@ const Settings = () => {
   };
 
   const handleDelete = async () => {
-    followers?.listOfFollowers.forEach(async (follower) => {
+    const postsQuery = query(
+      collection(db, "posts"),
+      where("creatorDisplayName", "==", userData?.displayName)
+    );
+
+    const postsResult = await getDocs(postsQuery);
+
+    const posts = postsResult.docs.map((doc) => ({
+      ...doc.data(),
+      myDocumentInUserFollowing: doc.id,
+    }));
+
+    posts?.forEach(async (post) => {
+      await deleteDoc(doc(db, "posts", post?.postId));
+    });
+
+    followers?.listOfFollowers?.forEach(async (follower) => {
       const collectionRef = collection(
         db,
         "users",
