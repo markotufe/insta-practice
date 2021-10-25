@@ -43,6 +43,9 @@ const userSlice = createSlice({
     setUsersToFollow(state, action) {
       state.usersToFollow = action.payload;
     },
+    setIsCreatingPost(state, action) {
+      state.isCreatingPost = action.payload;
+    },
     logout: (state) => {},
   },
 });

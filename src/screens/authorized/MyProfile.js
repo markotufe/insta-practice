@@ -20,6 +20,7 @@ import { FollowersModal } from "../../components/MyProfile/FollowersModal";
 import { OnePostModal } from "../../components/OnePostModal";
 import MyPosts from "../../components/MyProfile/MyPosts";
 import MyProfileData from "../../components/MyProfile/MyProfileData";
+import Loader from "../../components/Loader";
 
 const UserProfile = () => {
   let { id: usernameFromUrl } = useParams();
@@ -29,6 +30,7 @@ const UserProfile = () => {
   );
   const [userPosts, setUserPosts] = useState([]);
   const [selectedPost, setSelectedPost] = useState();
+  const [loading, setLoading] = useState(true);
 
   getMyFollowing(userData?.documentId);
   getMyFollowers(userData?.documentId);
@@ -43,11 +45,23 @@ const UserProfile = () => {
         ),
         (snapshot) => {
           setUserPosts(snapshot.docs.map((doc) => ({ ...doc.data() })));
+          setLoading(false);
         }
       );
       return unsubscribe;
     }
   }, [isCreatingPost]);
+
+  if (loading) {
+    return (
+      <div className="flex flex-col justify-center items-center min-h-screen">
+        <Loader />
+        <p className="mt-5 text-xl font-bold text-gray-900">
+          Fetching user profile...
+        </p>
+      </div>
+    );
+  }
 
   return (
     <>

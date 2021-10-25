@@ -22,6 +22,7 @@ import getUserFollowing from "../../helpers/getUserFollowing";
 import getUserFollowers from "../../helpers/getUserFollowers";
 import getMyFollowing from "../../helpers/getMyFollowing";
 import findMeInUserFollowers from "../../helpers/findMeInUserFollowers";
+import Loader from "../../components/Loader";
 
 const UserProfile = () => {
   const dispatch = useDispatch();
@@ -29,6 +30,7 @@ const UserProfile = () => {
 
   const [userPosts, setUserPosts] = useState([]);
   const [userFromUrl, setUserFromUrl] = useState();
+  const [loading, setLoading] = useState(true);
 
   const { followers, following } = useSelector((state) => state.users);
 
@@ -56,6 +58,7 @@ const UserProfile = () => {
         ),
         (snapshot) => {
           setUserPosts(snapshot.docs.map((doc) => ({ ...doc.data() })));
+          setLoading(false);
         }
       );
       return unsubscribe;
@@ -86,6 +89,17 @@ const UserProfile = () => {
   const handleFollow = async () => {
     await followUser(userData, userFromUrl);
   };
+
+  if (loading) {
+    return (
+      <div className="flex flex-col justify-center items-center min-h-screen">
+        <Loader />
+        <p className="mt-5 text-xl font-bold text-gray-900">
+          Fetching user profile...
+        </p>
+      </div>
+    );
+  }
 
   return (
     <>
