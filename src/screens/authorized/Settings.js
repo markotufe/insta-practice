@@ -57,12 +57,21 @@ const Settings = () => {
           style={{
             minWidth: "350px",
             minHeight: "250px",
-            paddingTop: "55px",
-            paddingLeft: "10px",
-            paddingRight: "10px",
+            paddingTop: "65px",
+            paddingLeft: "23px",
+            paddingRight: "23px",
+            paddingBottom: "45px",
           }}
         >
-          <h1>Hello, please enter your password to confirm your account</h1>
+          <div className="mb-5">
+            <h1 className="text-2xl font-semibold">
+              Hello, {userData?.displayName}
+            </h1>
+            <h3 className="text-gray-500">
+              Please enter your password to confirm your account
+            </h3>
+          </div>
+
           <div className="mb-2 mt-2">
             <label
               className="block text-grey-darker text-sm font-bold mb-2"
@@ -155,16 +164,28 @@ const Settings = () => {
   };
 
   return (
-    <div>
+    <>
       {reauthModal()}
-      <h1>Delete account</h1>
-      <button
-        className="bg-red-500 hover:bg-red-300 text-white font-bold py-2 px-4 rounded w-full mt-5"
-        onClick={() => (isReauth ? handleDelete() : setIsReauthModalOpen(true))}
-      >
-        {isReauth ? "Confirm deletion" : "Delete my account"}
-      </button>
-    </div>
+      <div className="container max-w-3xl mx-auto text-center mt-10">
+        <h1 className="text-2xl">
+          {isReauth
+            ? "Thanks for confirmig your credentials"
+            : "Delete account"}
+        </h1>
+        <p className="mt-3">
+          If you delete account, all data including photos, <br /> followers
+          will be removed
+        </p>
+        <button
+          className="bg-red-500 hover:bg-red-300 text-white font-bold py-2 px-4 rounded mt-5"
+          onClick={() =>
+            isReauth ? handleDelete() : setIsReauthModalOpen(true)
+          }
+        >
+          {isReauth ? "Confirm deletion" : "Delete my account"}
+        </button>
+      </div>
+    </>
   );
 };
 
