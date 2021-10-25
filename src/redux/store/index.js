@@ -4,16 +4,22 @@ import usersSlice from "../slices/usersSlice";
 import modalReducer from "../slices/modalSlice";
 import errorReducer from "../slices/errorsSlice";
 
-//nasi reduceri
-const reducer = combineReducers({
+const combinedReducer = combineReducers({
   user: userReducer,
   users: usersSlice,
   modal: modalReducer,
   errors: errorReducer,
 });
 
+const rootReducer = (state, action) => {
+  if (action.type === "user/logout") {
+    state = undefined;
+  }
+  return combinedReducer(state, action);
+};
+
 const store = configureStore({
-  reducer,
+  reducer: rootReducer,
 });
 
 export default store;

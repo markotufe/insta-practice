@@ -26,6 +26,9 @@ export default function useGetMyFollowing(userDocumentId) {
         dispatch(
           setMyFollowing({
             listOfFollowing: listOfFollowing,
+            listOfFollowingUsername: listOfFollowing.map(
+              (item) => item?.displayName
+            ),
           })
         );
 

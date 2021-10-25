@@ -1,5 +1,6 @@
 import Header from "../../components/Header";
 import { Modal } from "../../components/Modal";
+import { TagModal } from "../../components/TagModal";
 
 const DashboardLayout = ({ children }) => {
   return (
@@ -7,6 +8,7 @@ const DashboardLayout = ({ children }) => {
       <Header />
       {children}
       <Modal />
+      <TagModal />
     </>
   );
 };

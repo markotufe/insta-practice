@@ -7,7 +7,14 @@ import {
   CogIcon,
 } from "@heroicons/react/outline";
 
+import { getAuth, signOut } from "firebase/auth";
+import { useDispatch } from "react-redux";
+import { logout } from "../../redux/slices/userSlice";
+
 export default function HeaderDropdown({ displayName }) {
+  const auth = getAuth();
+  const dispatch = useDispatch();
+
   return (
     <div className="text-right top-16">
       <Menu as="div" className="relative text-left hidden sm:inline-block">
@@ -80,6 +87,10 @@ export default function HeaderDropdown({ displayName }) {
                     className={`${
                       active ? "bg-violet-500 text-blue-500" : "text-gray-900"
                     } group flex rounded-md items-center w-full px-2 py-2 text-sm`}
+                    onClick={async () => {
+                      await signOut(auth);
+                      dispatch(logout());
+                    }}
                   >
                     Log Out
                   </button>

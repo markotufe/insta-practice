@@ -25,12 +25,15 @@ import {
 
 import "emoji-mart/css/emoji-mart.css";
 import { Picker } from "emoji-mart";
-import { useSelector } from "react-redux";
+import { useSelector, useDispatch } from "react-redux";
 
 import useGetCommentsAndLikesForPost from "../helpers/getCommentsAndLikesForPost";
 import { Link } from "react-router-dom";
 
+import { setIsTagModalOpen } from "../redux/slices/modalSlice";
+
 const Post = ({ post }) => {
+  const dispatch = useDispatch();
   const [comment, setComment] = useState("");
   const [bookmarks, setBookmarks] = useState([]);
   const [hasLiked, setHasLiked] = useState(false);
@@ -267,7 +270,12 @@ const Post = ({ post }) => {
         <input
           ref={commentInputRef}
           value={comment}
-          onChange={(e) => setComment(e.target.value)}
+          onChange={(e) => {
+            setComment(e.target.value);
+            if (e.target.value.includes("@")) {
+              dispatch(setIsTagModalOpen(true));
+            }
+          }}
           type="text"
           className="border-none flex-1 focus:ring-0 outline-none"
           placeholder="Add a comment..."

@@ -18,6 +18,7 @@ const userSlice = createSlice({
     },
     following: {
       listOfFollowing: [],
+      listOfFollowingUsername: [],
     },
     usersToFollow: [],
   },
@@ -36,14 +37,13 @@ const userSlice = createSlice({
     setMyFollowing(state, action) {
       state.following = {
         listOfFollowing: action.payload.listOfFollowing,
+        listOfFollowingUsername: action.payload.listOfFollowingUsername,
       };
     },
     setUsersToFollow(state, action) {
       state.usersToFollow = action.payload;
     },
-    setIsCreatingPost(state, action) {
-      state.isCreatingPost = action.payload;
-    },
+    logout: (state) => {},
   },
 });
 
@@ -54,6 +54,7 @@ export const {
   setMyFollowing,
   setUsersToFollow,
   setIsCreatingPost,
+  logout,
 } = userSlice.actions;
 
 export default userSlice.reducer;
