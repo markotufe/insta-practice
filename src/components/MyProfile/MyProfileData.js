@@ -1,4 +1,5 @@
 import { useDispatch } from "react-redux";
+import { Link } from "react-router-dom";
 import {
   setFollowingModal,
   setFollowersModal,
@@ -45,12 +46,13 @@ const UserProfileData = ({
         </div>
       </div>
       <div className="w-full">
-        <button
+        <Link
+          to="/edit-profile"
           type="submit"
-          className="bg-gray-300 hover:bg-gray-400 text-gray-800 font-bold py-2 px-4 rounded w-full mt-5"
+          className="bg-gray-300 hover:bg-gray-400 text-gray-800 font-bold py-2 px-4 rounded w-full mt-5 text-center"
         >
           Edit Profile
-        </button>
+        </Link>
       </div>
     </div>
   );

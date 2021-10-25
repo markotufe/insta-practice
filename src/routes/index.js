@@ -21,9 +21,7 @@ function RoutesContainer() {
         <Route
           exact
           path={route.path}
-          render={(props) => (
-            <route.component name={route.name} {...props} {...route.props} />
-          )}
+          render={(props) => <route.component {...props} />}
           key={index}
         />
       );
@@ -36,9 +34,7 @@ function RoutesContainer() {
         <Route
           exact
           path={route.path}
-          render={(props) => (
-            <route.component name={route.name} {...props} {...route.props} />
-          )}
+          render={(props) => <route.component {...props} />}
           key={index}
         />
       );

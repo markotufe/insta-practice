@@ -56,7 +56,7 @@ export default function HeaderDropdown({ displayName }) {
               <Menu.Item>
                 {({ active }) => (
                   <Link
-                    to={`/my-profile/bookmarks`}
+                    to={`/bookmarks`}
                     className={`${
                       active ? "bg-violet-500 text-blue-500" : "text-gray-900"
                     } group flex rounded-md items-center w-full px-2 py-2 text-sm`}
@@ -69,7 +69,7 @@ export default function HeaderDropdown({ displayName }) {
               <Menu.Item>
                 {({ active }) => (
                   <Link
-                    to={`/my-profile/settings`}
+                    to={`/settings`}
                     className={`${
                       active ? "bg-violet-500 text-blue-500" : "text-gray-900"
                     } group flex rounded-md items-center w-full px-2 py-2 text-sm`}
