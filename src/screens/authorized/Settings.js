@@ -119,52 +119,55 @@ const Settings = () => {
   };
 
   const handleDelete = async () => {
-    setIsDeletingAccount(true);
+    try {
+      setIsDeletingAccount(true);
 
-    const postsQuery = query(
-      collection(db, "posts"),
-      where("creatorDisplayName", "==", userData?.displayName)
-    );
-
-    const postsResult = await getDocs(postsQuery);
-
-    const posts = postsResult.docs.map((doc) => ({
-      ...doc.data(),
-      myDocumentInUserFollowing: doc.id,
-    }));
-
-    posts?.forEach(async (post) => {
-      await deleteDoc(doc(db, "posts", post?.postId));
-    });
-
-    followers?.listOfFollowers?.forEach(async (follower) => {
-      const collectionRef = collection(
-        db,
-        "users",
-        follower?.documentId,
-        "following"
+      const postsQuery = query(
+        collection(db, "posts"),
+        where("creatorDisplayName", "==", userData?.displayName)
       );
-      const q = query(collectionRef, where("userId", "==", userData?.userId));
 
-      const results = await getDocs(q);
+      const postsResult = await getDocs(postsQuery);
 
-      const users = results.docs.map((doc) => ({
+      const posts = postsResult.docs.map((doc) => ({
         ...doc.data(),
         myDocumentInUserFollowing: doc.id,
       }));
 
-      await unfollowUser(
-        userData,
-        follower,
-        users[0]?.myDocumentInUserFollowing,
-        true
-      );
-    });
+      posts?.forEach(async (post) => {
+        await deleteDoc(doc(db, "posts", post?.postId));
+      });
 
-    const docRef = doc(db, "users", userData?.documentId);
-    await deleteDoc(docRef);
-    setIsDeletingAccount(false);
-    await deleteUser(user);
+      followers?.listOfFollowers?.forEach(async (follower) => {
+        const collectionRef = collection(
+          db,
+          "users",
+          follower?.documentId,
+          "following"
+        );
+        const q = query(collectionRef, where("userId", "==", userData?.userId));
+
+        const results = await getDocs(q);
+
+        const users = results.docs.map((doc) => ({
+          ...doc.data(),
+          myDocumentInUserFollowing: doc.id,
+        }));
+
+        await unfollowUser(
+          userData,
+          follower,
+          users[0]?.myDocumentInUserFollowing,
+          true
+        );
+      });
+
+      const docRef = doc(db, "users", userData?.documentId);
+      await deleteDoc(docRef);
+      await deleteUser(user);
+    } catch (error) {
+      console.log(error);
+    }
   };
 
   return (
