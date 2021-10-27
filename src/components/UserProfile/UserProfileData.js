@@ -25,7 +25,7 @@ const UserProfileData = ({
         className="rounded-full border p-[2px] w-24 h-24"
       />
       <div className="mt-6">
-        <h2 className="font-bold text-2xl">{fullName}</h2>
+        <h2 className="font-bold text-2xl text-center">{fullName}</h2>
       </div>
       <div className="flex justify-between text-center mt-6 w-full">
         <div>
