@@ -33,6 +33,7 @@ const Settings = () => {
   const [userPassword, setUserPassword] = useState("");
   const [isReauth, setIsReauth] = useState(false);
   const [isReauthModalOpen, setIsReauthModalOpen] = useState(false);
+  const [isDeletingAccount, setIsDeletingAccount] = useState(false);
 
   //redux
   const dispatch = useDispatch();
@@ -94,9 +95,9 @@ const Settings = () => {
           <button
             className="bg-blue-500 hover:bg-blue-300 text-white font-bold py-2 px-4 rounded w-full mt-5 disabled:cursor-not-allowed"
             onClick={() => reauthUser()}
-            disabled={userPassword.length < 6}
+            disabled={userPassword.length < 6 || isReauth}
           >
-            Confirm my account
+            {isReauth ? "Checking your account" : "Confirm my account"}
           </button>
         </div>
       </Modal>
@@ -118,6 +119,8 @@ const Settings = () => {
   };
 
   const handleDelete = async () => {
+    setIsDeletingAccount(true);
+
     const postsQuery = query(
       collection(db, "posts"),
       where("creatorDisplayName", "==", userData?.displayName)
@@ -160,6 +163,7 @@ const Settings = () => {
 
     const docRef = doc(db, "users", userData?.documentId);
     await deleteDoc(docRef);
+    setIsDeletingAccount(false);
     await deleteUser(user);
   };
 
@@ -177,12 +181,17 @@ const Settings = () => {
           will be removed
         </p>
         <button
-          className="bg-red-500 hover:bg-red-300 text-white font-bold py-2 px-4 rounded mt-5"
+          disabled={isDeletingAccount}
+          className="bg-red-500 hover:bg-red-300 text-white font-bold py-2 px-4 rounded mt-5 disabled:cursor-not-allowed"
           onClick={() =>
             isReauth ? handleDelete() : setIsReauthModalOpen(true)
           }
         >
-          {isReauth ? "Confirm deletion" : "Delete my account"}
+          {isDeletingAccount
+            ? "Deleting account"
+            : isReauth
+            ? "Confirm deletion"
+            : "Delete my account"}
         </button>
       </div>
     </>
