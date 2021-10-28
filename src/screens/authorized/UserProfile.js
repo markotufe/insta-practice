@@ -112,6 +112,7 @@ const UserProfile = () => {
             followersCount={followers?.listOfFollowers?.length}
             postsCount={userPosts?.length}
             fullName={userFromUrl?.fullName}
+            displayName={userFromUrl?.displayName}
             isActiveUserFollowingProfile={activeUserFollowingProfileData}
             handleFollow={handleFollow}
             handleUnfollow={handleUnfollow}

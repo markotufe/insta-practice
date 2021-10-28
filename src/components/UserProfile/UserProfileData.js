@@ -12,8 +12,13 @@ const UserProfileData = ({
   isActiveUserFollowingProfile,
   handleFollow,
   handleUnfollow,
+  displayName,
 }) => {
   const dispatch = useDispatch();
+
+  const handleOpetChatModal = () => {
+    console.log("chat with " + displayName);
+  };
 
   return (
     <div className="flex flex-col items-center justify-center mt-4 mx-auto">
@@ -26,8 +31,11 @@ const UserProfileData = ({
       />
       <div className="mt-6">
         <h2 className="font-bold text-2xl text-center">{fullName}</h2>
+        <h2 className="mt-1 text-center font-medium text-lg text-gray-500">
+          @{displayName}
+        </h2>
       </div>
-      <div className="flex justify-between text-center mt-6 w-full">
+      <div className="flex justify-between text-center mt-6 w-full ">
         <div>
           <p className="text-lg font-semibold">{postsCount}</p>
           <p className="text-sm text-gray-500">posts</p>
@@ -65,6 +73,13 @@ const UserProfileData = ({
             Follow
           </button>
         )}
+        <button
+          onClick={handleOpetChatModal}
+          type="submit"
+          className="bg-transparent text-black font-semibold hover:text-gray-400 py-2 px-4 border border-gray-100 hover:border-gray-200 rounded w-full mt-3 text-center"
+        >
+          Message
+        </button>
       </div>
     </div>
   );

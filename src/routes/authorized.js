@@ -2,6 +2,7 @@ import FeedScreen from "../screens/authorized/Feed";
 import MyProfile from "../screens/authorized/MyProfile";
 import UserProfile from "../screens/authorized/UserProfile";
 import ExploreFriends from "../screens/authorized/ExploreFriends";
+import ChatList from "../screens/authorized/ChatList";
 
 import Settings from "../screens/authorized/Settings";
 import Bookmarks from "../screens/authorized/Bookmarks";
@@ -17,6 +18,11 @@ const authorized = [
     path: "/explore",
     name: "ExploreFriends",
     component: ExploreFriends,
+  },
+  {
+    path: "/chat",
+    name: "ChatList",
+    component: ChatList,
   },
   {
     path: "/user/:id",
