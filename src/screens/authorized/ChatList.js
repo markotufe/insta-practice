@@ -35,9 +35,6 @@ const ChatList = () => {
     setChat(results);
   };
 
-  console.log(chatRooms);
-  console.log(chat);
-
   return (
     <div className="flex min-h-screen">
       <div className="w-[300px] bg-white shadow-lg">
@@ -46,7 +43,7 @@ const ChatList = () => {
           return (
             <div
               key={room?.documentId}
-              className="mt-4"
+              className="mt-4 cursor-pointer"
               onClick={() => getChatData(room?.documentId)}
             >
               <h1>{room?.receiverUserData?.fullName}</h1>
