@@ -11,7 +11,6 @@ import {
   onSnapshot,
   orderBy,
   query,
-  serverTimestamp,
   where,
 } from "@firebase/firestore";
 import { getMessages } from "../../helpers/getMessages";
@@ -54,14 +53,20 @@ export const ChatModal = ({ displayName, userFromUrl }) => {
     e.preventDefault();
 
     const chatRomRef = await addDoc(collection(db, "chatRooms"), {
-      timestamp: serverTimestamp(),
+      timestamp: Date.now(),
       activeUserId: userData?.userId,
+      activeUserData: {
+        ...userData,
+      },
+      receiverUserData: {
+        ...userFromUrl,
+      },
       receiverUserId: userFromUrl?.userId,
     });
 
     await addDoc(collection(db, "chatRooms", chatRomRef.id, "messages"), {
       text: message,
-      timestamp: serverTimestamp(),
+      timestamp: Date.now(),
       activeUserId: userData?.userId,
       receiverUserId: userFromUrl?.userId,
     });
