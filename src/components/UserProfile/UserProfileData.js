@@ -2,6 +2,7 @@ import { useDispatch } from "react-redux";
 import {
   setFollowingModal,
   setFollowersModal,
+  setIsChatModalOpen,
 } from "../../redux/slices/modalSlice";
 
 const UserProfileData = ({
@@ -17,7 +18,7 @@ const UserProfileData = ({
   const dispatch = useDispatch();
 
   const handleOpetChatModal = () => {
-    console.log("chat with " + displayName);
+    dispatch(setIsChatModalOpen(true));
   };
 
   return (

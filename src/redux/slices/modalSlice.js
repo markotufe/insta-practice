@@ -8,6 +8,7 @@ const modalSlice = createSlice({
     isFollowersModalOpen: false,
     isPostModalOpen: false,
     isTagModalOpen: false,
+    isChatModalOpen: false,
   },
   reducers: {
     setModal(state, action) {
@@ -25,6 +26,9 @@ const modalSlice = createSlice({
     setIsTagModalOpen(state, action) {
       state.isTagModalOpen = action.payload;
     },
+    setIsChatModalOpen(state, action) {
+      state.isChatModalOpen = action.payload;
+    },
   },
 });
 
@@ -34,6 +38,7 @@ export const {
   setFollowersModal,
   setIsPostModalOpen,
   setIsTagModalOpen,
+  setIsChatModalOpen,
 } = modalSlice.actions;
 
 export default modalSlice.reducer;

@@ -14,6 +14,7 @@ import { setModal } from "../../redux/slices/modalSlice";
 import { getUserByUsername } from "../../helpers/getUserByUsername";
 import { FollowersModal } from "../../components/UserProfile/UserFollowersModal";
 import { FollowingModal } from "../../components/UserProfile/UserFollowingModal";
+import { ChatModal } from "../../components/UserProfile/ChatModal";
 import { followUser, unfollowUser } from "../../helpers/followUnfollowUser";
 import UserProfileData from "../../components/UserProfile/UserProfileData";
 import UserPosts from "../../components/UserProfile/UserPosts";
@@ -105,6 +106,7 @@ const UserProfile = () => {
     <>
       <FollowingModal followingUsers={following?.listOfFollowing} />
       <FollowersModal followers={followers?.listOfFollowers} />
+      <ChatModal displayName={userFromUrl?.displayName} />
       <div className="grid grid-cols-1 md:grid-cols-2 md:max-w-3xl xl:grid-cols-5 xl:max-w-6xl mx-auto pt-6 min-h-screen mb-5">
         <div className="col-span-1 mr-5">
           <UserProfileData
