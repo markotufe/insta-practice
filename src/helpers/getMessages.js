@@ -1,12 +1,12 @@
 import { collection, getDocs, query, orderBy } from "firebase/firestore";
 import { db } from "../firebase";
 
-export async function getMessages(chatRoomData) {
+export async function getMessages(chatRoomDocumentId) {
   try {
     const collectionRef = collection(
       db,
       "chatRooms",
-      chatRoomData?.documentId,
+      chatRoomDocumentId,
       "messages"
     );
     const q = query(collectionRef, orderBy("timestamp", "desc"));
