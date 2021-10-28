@@ -106,7 +106,10 @@ const UserProfile = () => {
     <>
       <FollowingModal followingUsers={following?.listOfFollowing} />
       <FollowersModal followers={followers?.listOfFollowers} />
-      <ChatModal displayName={userFromUrl?.displayName} />
+      <ChatModal
+        displayName={userFromUrl?.displayName}
+        userFromUrl={userFromUrl}
+      />
       <div className="grid grid-cols-1 md:grid-cols-2 md:max-w-3xl xl:grid-cols-5 xl:max-w-6xl mx-auto pt-6 min-h-screen mb-5">
         <div className="col-span-1 mr-5">
           <UserProfileData
