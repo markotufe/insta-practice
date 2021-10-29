@@ -15,8 +15,8 @@ const ChatList = () => {
     const unsubscribe = onSnapshot(
       query(
         collection(db, "chatRooms"),
-        where("receiverUserId", "==", userData?.userId)
-        // where("activeUserId", "==", userData?.userId)
+        // where("receiverUserId", "==", userData?.userId)
+        where("activeUserId", "==", userData?.userId)
         // orderBy("timestamp", "desc")
       ),
       async (snapshot) => {
@@ -49,8 +49,8 @@ const ChatList = () => {
               className="mt-4 cursor-pointer"
               onClick={() => getChatData(room?.documentId)}
             >
-              {/* <h1>{room?.receiverUserData?.fullName}</h1> */}
-              <h1>{room?.activeUserData?.fullName}</h1>
+              <h1>{room?.receiverUserData?.fullName}</h1>
+              {/* <h1>{room?.activeUserData?.fullName}</h1> */}
             </div>
           );
         })}
