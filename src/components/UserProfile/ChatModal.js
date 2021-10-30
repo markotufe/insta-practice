@@ -5,7 +5,7 @@ import "react-responsive-modal/styles.css";
 import { Modal } from "react-responsive-modal";
 
 import { db } from "../../firebase";
-import { addDoc, collection } from "@firebase/firestore";
+import { addDoc, collection, doc, updateDoc } from "@firebase/firestore";
 
 export const ChatModal = ({ displayName, userFromUrl }) => {
   const [message, setMessage] = useState("");
@@ -18,21 +18,32 @@ export const ChatModal = ({ displayName, userFromUrl }) => {
 
     const chatRomRef = await addDoc(collection(db, "chatRooms"), {
       timestamp: Date.now(),
-      activeUserId: userData?.userId,
       activeUserData: {
         ...userData,
       },
       receiverUserData: {
         ...userFromUrl,
       },
-      receiverUserId: userFromUrl?.userId,
+    });
+
+    await updateDoc(doc(db, "chatRooms", chatRomRef.id), {
+      chatRoomDocumentId: chatRomRef.id,
     });
 
     await addDoc(collection(db, "chatRooms", chatRomRef.id, "messages"), {
       text: message,
       timestamp: Date.now(),
-      activeUserId: userData?.userId,
-      receiverUserId: userFromUrl?.userId,
+      sentBy: userData?.userId,
+    });
+
+    await addDoc(collection(db, "users", userData?.documentId, "chats"), {
+      chatRoomDocumentId: chatRomRef?.id,
+      timestamp: Date.now(),
+    });
+
+    await addDoc(collection(db, "users", userFromUrl?.documentId, "chats"), {
+      chatRoomDocumentId: chatRomRef?.id,
+      timestamp: Date.now(),
     });
 
     await addDoc(

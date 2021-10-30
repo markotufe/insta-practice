@@ -15,8 +15,7 @@ const ChatList = () => {
     const unsubscribe = onSnapshot(
       query(
         collection(db, "chatRooms"),
-        // where("receiverUserId", "==", userData?.userId)
-        where("activeUserId", "==", userData?.userId)
+        where("chatRoomDocumentId", "==", "O2ttw3ZwwX8sGBvbEySN")
         // orderBy("timestamp", "desc")
       ),
       async (snapshot) => {
@@ -24,9 +23,6 @@ const ChatList = () => {
           ...doc.data(),
           documentId: doc.id,
         }));
-
-        console.log(chatRooms);
-
         setChatRooms(chatRooms);
       }
     );
@@ -37,6 +33,8 @@ const ChatList = () => {
     const results = await getMessages(chatRoomDocumentId);
     setChat(results);
   };
+
+  console.log(chat);
 
   return (
     <div className="flex min-h-screen">
@@ -49,8 +47,11 @@ const ChatList = () => {
               className="mt-4 cursor-pointer"
               onClick={() => getChatData(room?.documentId)}
             >
-              <h1>{room?.receiverUserData?.fullName}</h1>
-              {/* <h1>{room?.activeUserData?.fullName}</h1> */}
+              <h1>
+                {room?.activeUserData?.fullName === userData?.fullName
+                  ? room?.receiverUserData?.fullName
+                  : room?.activeUserData?.fullName}
+              </h1>
             </div>
           );
         })}
