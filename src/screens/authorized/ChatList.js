@@ -172,6 +172,8 @@ const ChatList = () => {
 
     if (isMessageSentToUser && !isMessageSentFromUser) {
       try {
+        setMessage("");
+
         await addDoc(
           collection(
             db,
@@ -203,12 +205,13 @@ const ChatList = () => {
             sentBy: userData?.userId,
           }
         );
-        setMessage("");
       } catch (error) {
         console.log(error);
       }
     } else {
       try {
+        setMessage("");
+
         await addDoc(
           collection(
             db,
@@ -240,7 +243,6 @@ const ChatList = () => {
             sentBy: userData?.userId,
           }
         );
-        setMessage("");
       } catch (error) {
         console.log(error);
       }
