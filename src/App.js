@@ -7,19 +7,11 @@ import { useDispatch } from "react-redux";
 import { db } from "./firebase";
 import Loader from "./components/Loader";
 import moment from "moment";
-import { createUsers } from "./dummyUsers";
 
 function App() {
   const [loading, setLoading] = useState(true);
   const auth = getAuth();
   const dispatch = useDispatch();
-
-  // useEffect(() => {
-  //   async function handleDummyUsers() {
-  //     await createUsers();
-  //   }
-  //   handleDummyUsers()
-  // }, []);
 
   useEffect(() => {
     const unsub = onAuthStateChanged(auth, async (user) => {

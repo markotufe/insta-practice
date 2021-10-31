@@ -1,12 +1,6 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 import { useState, useEffect } from "react";
-import {
-  onSnapshot,
-  collection,
-  query,
-  where,
-  orderBy,
-} from "@firebase/firestore";
+import { onSnapshot, collection, query, where } from "@firebase/firestore";
 import Post from "./Post";
 import { db } from "../firebase";
 import { useSelector } from "react-redux";
@@ -25,15 +19,20 @@ const Posts = () => {
     const unsubscribe = onSnapshot(
       query(
         collection(db, "posts"),
-        where(
-          "creatorId",
-          "in",
-          !myFollowingIds?.length ? ["-"] : myFollowingIds
-        ),
-        orderBy("timestamp", "desc")
+        where("creatorId", "!=", userData?.userId)
       ),
       (snapshot) => {
-        setPosts(snapshot.docs.map((doc) => ({ ...doc.data() })));
+        let results = snapshot.docs.map((doc) => ({ ...doc.data() }));
+
+        results = results.filter(
+          (user) => myFollowingIds.indexOf(user.creatorId) > -1
+        );
+
+        results.sort(function (a, b) {
+          return new Date(b.timestamp) - new Date(a.timestamp);
+        });
+
+        setPosts(results);
         setLoading(false);
       }
     );

@@ -15,7 +15,7 @@ const ChatList = () => {
     const unsubscribe = onSnapshot(
       query(
         collection(db, "chatRooms"),
-        where("chatRoomDocumentId", "in", "O2ttw3ZwwX8sGBvbEySN")
+        where("chatRoomDocumentId", "==", "O2ttw3ZwwX8sGBvbEySN")
         // orderBy("timestamp", "desc")
       ),
       async (snapshot) => {
