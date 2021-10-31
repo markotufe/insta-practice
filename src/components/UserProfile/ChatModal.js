@@ -5,7 +5,14 @@ import { Modal } from "react-responsive-modal";
 import "react-responsive-modal/styles.css";
 
 import { db } from "../../firebase";
-import { addDoc, collection, getDocs, query, where } from "@firebase/firestore";
+import {
+  addDoc,
+  collection,
+  getDocs,
+  onSnapshot,
+  query,
+  where,
+} from "@firebase/firestore";
 
 export const ChatModal = ({ displayName, userFromUrl }) => {
   const [message, setMessage] = useState("");
@@ -19,46 +26,36 @@ export const ChatModal = ({ displayName, userFromUrl }) => {
   const userData = useSelector((state) => state.user.userData);
 
   useEffect(() => {
-    const checkIsMessageSentToUser = async () => {
-      //proveravam da li sam korisniku poslao poruku
-      const collectionRef = collection(
-        db,
-        "users",
-        userFromUrl?.documentId,
-        "chats"
-      );
-      const q = query(collectionRef, where("sentBy", "==", userData?.userId));
-      const snapshot = await getDocs(q);
-
-      if (snapshot.docs.length > 0) {
-        setReceiverChatDocumentId(snapshot.docs[0].id);
-        setIsMessageSentToUser(snapshot.docs.length > 0);
+    const unsubscribe = onSnapshot(
+      query(
+        collection(db, "users", userFromUrl?.documentId, "chats"),
+        where("sentBy", "==", userData?.userId)
+      ),
+      (snapshot) => {
+        if (snapshot.docs.length > 0) {
+          setReceiverChatDocumentId(snapshot.docs[0].id);
+          setIsMessageSentToUser(snapshot.docs.length > 0);
+        }
       }
-    };
+    );
+    return unsubscribe;
+  }, [userData?.userId, userFromUrl?.documentId]);
 
-    const checkIsMessageSentFromUser = async () => {
-      //proveravam da li mi je korisnik poslao poruku
-      const collectionRef = collection(
-        db,
-        "users",
-        userFromUrl?.documentId,
-        "chats"
-      );
-      const q = query(
-        collectionRef,
+  useEffect(() => {
+    const unsubscribe = onSnapshot(
+      query(
+        collection(db, "users", userFromUrl?.documentId, "chats"),
         where("sentBy", "==", userFromUrl?.userId)
-      );
-      const snapshot = await getDocs(q);
-
-      if (snapshot.docs.length > 0) {
-        setSenderChatDocumentId(snapshot.docs[0].id);
-        setIsMessageSentFromUser(snapshot.docs.length > 0);
+      ),
+      (snapshot) => {
+        if (snapshot.docs.length > 0) {
+          setSenderChatDocumentId(snapshot.docs[0].id);
+          setIsMessageSentFromUser(snapshot.docs.length > 0);
+        }
       }
-    };
-
-    checkIsMessageSentToUser();
-    checkIsMessageSentFromUser();
-  }, [userData?.userId, userFromUrl?.documentId, userFromUrl?.userId]);
+    );
+    return unsubscribe;
+  }, [userFromUrl?.documentId, userFromUrl?.userId]);
 
   useEffect(() => {
     if (isMessageSentToUser) {
