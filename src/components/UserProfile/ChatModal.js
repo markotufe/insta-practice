@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { setIsChatModalOpen } from "../../redux/slices/modalSlice";
@@ -39,7 +40,7 @@ export const ChatModal = ({ displayName, userFromUrl }) => {
       }
     );
     return unsubscribe;
-  }, [userData?.userId, userFromUrl?.documentId]);
+  }, []);
 
   useEffect(() => {
     const unsubscribe = onSnapshot(
@@ -55,7 +56,7 @@ export const ChatModal = ({ displayName, userFromUrl }) => {
       }
     );
     return unsubscribe;
-  }, [userFromUrl?.documentId, userFromUrl?.userId]);
+  }, []);
 
   useEffect(() => {
     if (isMessageSentToUser) {
@@ -95,12 +96,7 @@ export const ChatModal = ({ displayName, userFromUrl }) => {
       };
       getMyChatDocumentId();
     }
-  }, [
-    isMessageSentToUser,
-    userData?.documentId,
-    userData?.userId,
-    userFromUrl?.userId,
-  ]);
+  }, [isMessageSentToUser]);
 
   const handleSendMessage = async (e) => {
     e.preventDefault();

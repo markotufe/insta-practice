@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 import { useEffect, useState } from "react";
 
 import {
@@ -44,7 +45,7 @@ const ChatList = () => {
       }
     );
     return unsubscribe;
-  }, [userData?.documentId]);
+  }, []);
 
   useEffect(() => {
     if (chatRoomDocumentId) {
@@ -71,7 +72,7 @@ const ChatList = () => {
 
       return unsubscribe;
     }
-  }, [chatRoomDocumentId, chatRooms, userData?.documentId]);
+  }, [chatRoomDocumentId]);
 
   //ovo je za send
   useEffect(() => {
@@ -90,7 +91,7 @@ const ChatList = () => {
       );
       return unsubscribe;
     }
-  }, [receiver?.documentId, receiver, userData?.userId]);
+  }, [receiver]);
 
   useEffect(() => {
     if (receiver) {
@@ -108,7 +109,7 @@ const ChatList = () => {
       );
       return unsubscribe;
     }
-  }, [receiver?.userId, receiver?.documentId, receiver]);
+  }, [receiver]);
 
   useEffect(() => {
     if (sender) {
