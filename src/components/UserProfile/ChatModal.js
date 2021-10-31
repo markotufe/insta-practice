@@ -111,12 +111,8 @@ export const ChatModal = ({ displayName, userFromUrl }) => {
           collection(db, "users", userData?.documentId, "chats"),
           {
             sentBy: userData?.userId,
-            activeUserData: {
-              ...userData,
-            },
-            receiverUserData: {
-              ...userFromUrl,
-            },
+            sender: { ...userData },
+            receiver: { ...userFromUrl },
             timestamp: Date.now(),
           }
         );
@@ -125,12 +121,8 @@ export const ChatModal = ({ displayName, userFromUrl }) => {
           collection(db, "users", userFromUrl?.documentId, "chats"),
           {
             sentBy: userData?.userId,
-            activeUserData: {
-              ...userData,
-            },
-            receiverUserData: {
-              ...userFromUrl,
-            },
+            sender: { ...userData },
+            receiver: { ...userFromUrl },
             timestamp: Date.now(),
           }
         );
