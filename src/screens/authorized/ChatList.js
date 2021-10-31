@@ -79,7 +79,12 @@ const ChatList = () => {
       <div className="flex-1 px-5 chat-bg">
         {chat.map((message, index) => {
           return (
-            <div key={index}>
+            <div
+              key={index}
+              className={
+                message.sentBy === userData?.userId ? "text-right" : "text-left"
+              }
+            >
               {message?.text}{" "}
               {message.sentBy === userData?.userId
                 ? "sent by me"
