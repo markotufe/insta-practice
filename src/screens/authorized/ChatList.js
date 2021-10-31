@@ -165,13 +165,7 @@ const ChatList = () => {
         getMyChatDocumentId();
       }
     }
-  }, [
-    isMessageSentToUser,
-    userData?.documentId,
-    userData?.userId,
-    sender?.userId,
-    sender,
-  ]);
+  }, [isMessageSentToUser, sender]);
 
   const handleSend = async (e) => {
     e.preventDefault();
