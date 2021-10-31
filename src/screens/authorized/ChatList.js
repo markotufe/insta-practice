@@ -1,6 +1,12 @@
 import { useEffect, useState } from "react";
 
-import { collection, onSnapshot, orderBy, query } from "@firebase/firestore";
+import {
+  collection,
+  onSnapshot,
+  orderBy,
+  query,
+  where,
+} from "@firebase/firestore";
 import { db } from "../../firebase";
 import { getMessages } from "../../helpers/getMessages";
 import { useSelector } from "react-redux";
@@ -15,6 +21,7 @@ const ChatList = () => {
     const unsubscribe = onSnapshot(
       query(
         collection(db, "users", userData?.documentId, "chats"),
+        // where("receiverUserId", "==", "0AV8EtzlzeQtpotTOvzTYH0lUFW2")
         orderBy("timestamp", "desc")
       ),
       async (snapshot) => {

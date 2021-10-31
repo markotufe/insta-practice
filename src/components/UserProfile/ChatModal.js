@@ -20,6 +20,7 @@ export const ChatModal = ({ displayName, userFromUrl }) => {
       const chatRomRefActiveUser = await addDoc(
         collection(db, "users", userData?.documentId, "chats"),
         {
+          receiverUserId: userFromUrl?.userId,
           activeUserData: {
             ...userData,
           },
@@ -33,6 +34,7 @@ export const ChatModal = ({ displayName, userFromUrl }) => {
       const chatRomRefActiveUserFromUrl = await addDoc(
         collection(db, "users", userFromUrl?.documentId, "chats"),
         {
+          senderUserId: userData?.userId,
           activeUserData: {
             ...userData,
           },
