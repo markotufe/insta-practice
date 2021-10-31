@@ -23,8 +23,6 @@ export default function useGetUsersToFollow() {
           documentId: doc.id,
         }));
 
-        console.log(results);
-
         results = results.filter(
           (user) => myFollowingIds.indexOf(user.userId) === -1
         );
