@@ -1,85 +1,255 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { setIsChatModalOpen } from "../../redux/slices/modalSlice";
-import "react-responsive-modal/styles.css";
 import { Modal } from "react-responsive-modal";
+import "react-responsive-modal/styles.css";
 
 import { db } from "../../firebase";
-import { addDoc, collection, doc, updateDoc } from "@firebase/firestore";
+import { addDoc, collection, getDocs, query, where } from "@firebase/firestore";
 
 export const ChatModal = ({ displayName, userFromUrl }) => {
   const [message, setMessage] = useState("");
+  const [isMessageSentToUser, setIsMessageSentToUser] = useState(false);
+  const [isMessageSentFromUser, setIsMessageSentFromUser] = useState(false);
+  const [receiverChatDocumentId, setReceiverChatDocumentId] = useState("");
+  const [senderChatDocumentId, setSenderChatDocumentId] = useState("");
+  const [myChatDocumentId, setMyChatDocumentId] = useState("");
   const dispatch = useDispatch();
   const isChatModalOpen = useSelector((state) => state.modal.isChatModalOpen);
   const userData = useSelector((state) => state.user.userData);
 
-  const handleSendMessage = async (e) => {
-    e.preventDefault();
-
-    try {
-      const chatRomRefActiveUser = await addDoc(
-        collection(db, "users", userData?.documentId, "chats"),
-        {
-          receiverUserId: userFromUrl?.userId,
-          activeUserData: {
-            ...userData,
-          },
-          receiverUserData: {
-            ...userFromUrl,
-          },
-          timestamp: Date.now(),
-        }
+  useEffect(() => {
+    const checkIsMessageSentToUser = async () => {
+      //proveravam da li sam korisniku poslao poruku
+      const collectionRef = collection(
+        db,
+        "users",
+        userFromUrl?.documentId,
+        "chats"
       );
+      const q = query(collectionRef, where("sentBy", "==", userData?.userId));
+      const snapshot = await getDocs(q);
 
-      const chatRomRefActiveUserFromUrl = await addDoc(
-        collection(db, "users", userFromUrl?.documentId, "chats"),
-        {
-          senderUserId: userData?.userId,
-          activeUserData: {
-            ...userData,
-          },
-          receiverUserData: {
-            ...userFromUrl,
-          },
-          timestamp: Date.now(),
-        }
+      if (snapshot.docs.length > 0) {
+        setReceiverChatDocumentId(snapshot.docs[0].id);
+        setIsMessageSentToUser(snapshot.docs.length > 0);
+      }
+    };
+
+    const checkIsMessageSentFromUser = async () => {
+      //proveravam da li mi je korisnik poslao poruku
+      const collectionRef = collection(
+        db,
+        "users",
+        userFromUrl?.documentId,
+        "chats"
       );
+      const q = query(
+        collectionRef,
+        where("sentBy", "==", userFromUrl?.userId)
+      );
+      const snapshot = await getDocs(q);
 
-      await addDoc(
-        collection(
+      if (snapshot.docs.length > 0) {
+        setSenderChatDocumentId(snapshot.docs[0].id);
+        setIsMessageSentFromUser(snapshot.docs.length > 0);
+      }
+    };
+
+    checkIsMessageSentToUser();
+    checkIsMessageSentFromUser();
+  }, [userData?.userId, userFromUrl?.documentId, userFromUrl?.userId]);
+
+  useEffect(() => {
+    if (isMessageSentToUser) {
+      const getMyChatDocumentId = async () => {
+        const collectionRef = collection(
           db,
           "users",
           userData?.documentId,
-          "chats",
-          chatRomRefActiveUser.id,
-          "messages"
-        ),
-        {
-          text: message,
-          timestamp: Date.now(),
-          sentBy: userData?.userId,
-        }
-      );
+          "chats"
+        );
+        const q = query(collectionRef, where("sentBy", "==", userData?.userId));
+        const snapshot = await getDocs(q);
 
-      await addDoc(
-        collection(
+        if (snapshot.docs.length > 0) {
+          setMyChatDocumentId(snapshot.docs[0].id);
+        }
+      };
+
+      getMyChatDocumentId();
+    } else {
+      const getMyChatDocumentId = async () => {
+        const collectionRef = collection(
           db,
           "users",
-          userFromUrl?.documentId,
-          "chats",
-          chatRomRefActiveUserFromUrl.id,
-          "messages"
-        ),
-        {
-          text: message,
-          timestamp: Date.now(),
-          sentBy: userData?.userId,
-        }
-      );
+          userData?.documentId,
+          "chats"
+        );
+        const q = query(
+          collectionRef,
+          where("sentBy", "==", userFromUrl?.userId)
+        );
+        const snapshot = await getDocs(q);
 
-      dispatch(setIsChatModalOpen(false));
-    } catch (error) {
-      console.log(error);
+        if (snapshot.docs.length > 0) {
+          setMyChatDocumentId(snapshot.docs[0].id);
+        }
+      };
+      getMyChatDocumentId();
+    }
+  }, [
+    isMessageSentToUser,
+    userData?.documentId,
+    userData?.userId,
+    userFromUrl?.userId,
+  ]);
+
+  const handleSendMessage = async (e) => {
+    e.preventDefault();
+
+    if (!isMessageSentToUser && !isMessageSentFromUser) {
+      try {
+        const chatRomRefActiveUser = await addDoc(
+          collection(db, "users", userData?.documentId, "chats"),
+          {
+            sentBy: userData?.userId,
+            activeUserData: {
+              ...userData,
+            },
+            receiverUserData: {
+              ...userFromUrl,
+            },
+            timestamp: Date.now(),
+          }
+        );
+
+        const chatRomRefActiveUserFromUrl = await addDoc(
+          collection(db, "users", userFromUrl?.documentId, "chats"),
+          {
+            sentBy: userData?.userId,
+            activeUserData: {
+              ...userData,
+            },
+            receiverUserData: {
+              ...userFromUrl,
+            },
+            timestamp: Date.now(),
+          }
+        );
+
+        await addDoc(
+          collection(
+            db,
+            "users",
+            userData?.documentId,
+            "chats",
+            chatRomRefActiveUser.id,
+            "messages"
+          ),
+          {
+            text: message,
+            timestamp: Date.now(),
+            sentBy: userData?.userId,
+          }
+        );
+
+        await addDoc(
+          collection(
+            db,
+            "users",
+            userFromUrl?.documentId,
+            "chats",
+            chatRomRefActiveUserFromUrl.id,
+            "messages"
+          ),
+          {
+            text: message,
+            timestamp: Date.now(),
+            sentBy: userData?.userId,
+          }
+        );
+
+        dispatch(setIsChatModalOpen(false));
+      } catch (error) {
+        console.log(error);
+      }
+    } else if (isMessageSentToUser && !isMessageSentFromUser) {
+      try {
+        await addDoc(
+          collection(
+            db,
+            "users",
+            userData?.documentId,
+            "chats",
+            myChatDocumentId,
+            "messages"
+          ),
+          {
+            text: message,
+            timestamp: Date.now(),
+            sentBy: userData?.userId,
+          }
+        );
+
+        await addDoc(
+          collection(
+            db,
+            "users",
+            userFromUrl?.documentId,
+            "chats",
+            receiverChatDocumentId,
+            "messages"
+          ),
+          {
+            text: message,
+            timestamp: Date.now(),
+            sentBy: userData?.userId,
+          }
+        );
+
+        dispatch(setIsChatModalOpen(false));
+      } catch (error) {
+        console.log(error);
+      }
+    } else {
+      try {
+        await addDoc(
+          collection(
+            db,
+            "users",
+            userData?.documentId,
+            "chats",
+            myChatDocumentId,
+            "messages"
+          ),
+          {
+            text: message,
+            timestamp: Date.now(),
+            sentBy: userData?.userId,
+          }
+        );
+
+        await addDoc(
+          collection(
+            db,
+            "users",
+            userFromUrl?.documentId,
+            "chats",
+            senderChatDocumentId,
+            "messages"
+          ),
+          {
+            text: message,
+            timestamp: Date.now(),
+            sentBy: userData?.userId,
+          }
+        );
+
+        dispatch(setIsChatModalOpen(false));
+      } catch (error) {
+        console.log(error);
+      }
     }
   };
 
