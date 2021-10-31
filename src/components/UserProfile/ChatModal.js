@@ -16,45 +16,69 @@ export const ChatModal = ({ displayName, userFromUrl }) => {
   const handleSendMessage = async (e) => {
     e.preventDefault();
 
-    const chatRomRef = await addDoc(collection(db, "chatRooms"), {
-      timestamp: Date.now(),
-      activeUserData: {
-        ...userData,
-      },
-      receiverUserData: {
-        ...userFromUrl,
-      },
-    });
+    try {
+      const chatRomRefActiveUser = await addDoc(
+        collection(db, "users", userData?.documentId, "chats"),
+        {
+          activeUserData: {
+            ...userData,
+          },
+          receiverUserData: {
+            ...userFromUrl,
+          },
+          timestamp: Date.now(),
+        }
+      );
 
-    await addDoc(collection(db, "chatRooms", chatRomRef.id, "messages"), {
-      text: message,
-      timestamp: Date.now(),
-      sentBy: userData?.userId,
-    });
+      const chatRomRefActiveUserFromUrl = await addDoc(
+        collection(db, "users", userFromUrl?.documentId, "chats"),
+        {
+          activeUserData: {
+            ...userData,
+          },
+          receiverUserData: {
+            ...userFromUrl,
+          },
+          timestamp: Date.now(),
+        }
+      );
 
-    await addDoc(collection(db, "users", userData?.documentId, "chats"), {
-      chatRoomDocumentId: chatRomRef?.id,
-      timestamp: Date.now(),
-    });
+      await addDoc(
+        collection(
+          db,
+          "users",
+          userData?.documentId,
+          "chats",
+          chatRomRefActiveUser.id,
+          "messages"
+        ),
+        {
+          text: message,
+          timestamp: Date.now(),
+          sentBy: userData?.userId,
+        }
+      );
 
-    await addDoc(collection(db, "users", userFromUrl?.documentId, "chats"), {
-      chatRoomDocumentId: chatRomRef?.id,
-      timestamp: Date.now(),
-    });
+      await addDoc(
+        collection(
+          db,
+          "users",
+          userFromUrl?.documentId,
+          "chats",
+          chatRomRefActiveUserFromUrl.id,
+          "messages"
+        ),
+        {
+          text: message,
+          timestamp: Date.now(),
+          sentBy: userData?.userId,
+        }
+      );
 
-    await addDoc(
-      collection(db, "chatRoomsAccessControl", chatRomRef?.id, "members"),
-      {
-        ...userData,
-      }
-    );
-
-    await addDoc(
-      collection(db, "chatRoomsAccessControl", chatRomRef?.id, "members"),
-      {
-        ...userFromUrl,
-      }
-    );
+      dispatch(setIsChatModalOpen(false));
+    } catch (error) {
+      console.log(error);
+    }
   };
 
   return (

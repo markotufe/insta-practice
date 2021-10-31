@@ -1,11 +1,13 @@
 import { collection, getDocs, query, orderBy } from "firebase/firestore";
 import { db } from "../firebase";
 
-export async function getMessages(chatRoomDocumentId) {
+export async function getMessages(userDocumentId, chatRoomDocumentId) {
   try {
     const collectionRef = collection(
       db,
-      "chatRooms",
+      "users",
+      userDocumentId,
+      "chats",
       chatRoomDocumentId,
       "messages"
     );
