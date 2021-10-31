@@ -16,15 +16,18 @@ export default function useGetUsersToFollow() {
 
   useEffect(() => {
     const unsubscribe = onSnapshot(
-      query(
-        collection(db, "users"),
-        where("userId", "not-in", [...myFollowingIds, userData?.userId])
-      ),
+      query(collection(db, "users"), where("userId", "!=", userData?.userId)),
       async (snapshot) => {
-        const results = snapshot.docs.map((doc) => ({
+        let results = snapshot.docs.map((doc) => ({
           ...doc.data(),
           documentId: doc.id,
         }));
+
+        console.log(results);
+
+        results = results.filter(
+          (user) => myFollowingIds.indexOf(user.userId) === -1
+        );
 
         const userOnePost = await Promise.all(
           results.map(async (user) => {

@@ -26,10 +26,6 @@ export const ChatModal = ({ displayName, userFromUrl }) => {
       },
     });
 
-    await updateDoc(doc(db, "chatRooms", chatRomRef.id), {
-      chatRoomDocumentId: chatRomRef.id,
-    });
-
     await addDoc(collection(db, "chatRooms", chatRomRef.id, "messages"), {
       text: message,
       timestamp: Date.now(),
