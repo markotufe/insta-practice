@@ -283,7 +283,7 @@ const ChatList = () => {
               {message?.text}{" "}
               {message.sentBy === userData?.userId
                 ? "sent by me"
-                : "sent by other"}{" "}
+                : `sent by ${receiver?.displayName}`}{" "}
             </div>
           );
         })}
