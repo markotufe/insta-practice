@@ -9,6 +9,7 @@ import {
   orderBy,
   query,
   updateDoc,
+  where,
 } from "@firebase/firestore";
 import { db } from "../../firebase";
 import { useSelector } from "react-redux";
@@ -20,6 +21,7 @@ const ChatList = () => {
   const [message, setMessage] = useState("");
   const [receiver, setReceiver] = useState("");
   const [myChatRoomIdInProfile, setMyChatRoomIdInProfile] = useState("");
+  const [receiverChatRoomId, setReceiverChatRoomId] = useState("");
 
   const userData = useSelector((state) => state.user.userData);
 
@@ -41,6 +43,27 @@ const ChatList = () => {
     );
     return unsubscribe;
   }, []);
+
+  //ovo je za get soba i poruka
+  useEffect(() => {
+    if (receiver) {
+      const unsubscribe = onSnapshot(
+        query(
+          collection(db, "users", receiver?.documentId, "chats"),
+          where("chatId", "==", chatRoomDocumentId)
+        ),
+        async (snapshot) => {
+          let chatRooms = snapshot.docs.map((doc) => ({
+            ...doc.data(),
+            documentId: doc.id,
+          }));
+
+          setReceiverChatRoomId(chatRooms[0]?.documentId);
+        }
+      );
+      return unsubscribe;
+    }
+  }, [receiver]);
 
   useEffect(() => {
     if (chatRoomDocumentId) {
@@ -80,13 +103,13 @@ const ChatList = () => {
         }
       );
 
-      // //korisnikov chat dokument id
-      // await updateDoc(
-      //   doc(db, "users", receiver?.documentId, "chats", chatRoomDocumentId),
-      //   {
-      //     timestamp: Date.now(),
-      //   }
-      // );
+      //korisnikov chat dokument id
+      await updateDoc(
+        doc(db, "users", receiver?.documentId, "chats", receiverChatRoomId),
+        {
+          timestamp: Date.now(),
+        }
+      );
     } catch (error) {
       console.log(error);
     }

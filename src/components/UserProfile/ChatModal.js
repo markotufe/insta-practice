@@ -24,10 +24,17 @@ export const ChatModal = ({ displayName, userFromUrl }) => {
 
   useEffect(() => {
     const unsubscribe = onSnapshot(
-      query(collection(db, "chats"), where("to", "==", userFromUrl?.userId)),
-      (snapshot) => {
+      query(
+        collection(db, "users", userData?.documentId, "chats"),
+        where("sentBy", "==", userFromUrl?.userId)
+      ),
+      async (snapshot) => {
         if (snapshot.docs.length > 0) {
-          setChatId(snapshot.docs[0].id);
+          let results = snapshot.docs.map((doc) => ({
+            ...doc.data(),
+            documentId: doc.id,
+          }));
+          setChatId(results[0]?.chatId);
         }
       }
     );
@@ -37,12 +44,16 @@ export const ChatModal = ({ displayName, userFromUrl }) => {
   useEffect(() => {
     const unsubscribe = onSnapshot(
       query(
-        collection(db, "chats"),
-        where("sentBy", "==", userFromUrl?.userId)
+        collection(db, "users", userFromUrl?.documentId, "chats"),
+        where("sentBy", "==", userData?.userId)
       ),
-      (snapshot) => {
+      async (snapshot) => {
         if (snapshot.docs.length > 0) {
-          setChatId(snapshot.docs[0].id);
+          let results = snapshot.docs.map((doc) => ({
+            ...doc.data(),
+            documentId: doc.id,
+          }));
+          setChatId(results[0]?.chatId);
         }
       }
     );
@@ -82,6 +93,8 @@ export const ChatModal = ({ displayName, userFromUrl }) => {
           receiver: { ...userFromUrl },
           chatId: chatRef?.id,
           timestamp: Date.now(),
+          sentBy: userData?.userId,
+          to: userFromUrl?.userId,
         });
 
         await addDoc(
@@ -91,6 +104,8 @@ export const ChatModal = ({ displayName, userFromUrl }) => {
             receiver: { ...userFromUrl },
             chatId: chatRef?.id,
             timestamp: Date.now(),
+            sentBy: userData?.userId,
+            to: userFromUrl?.userId,
           }
         );
 
