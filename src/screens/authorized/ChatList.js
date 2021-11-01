@@ -14,6 +14,7 @@ import {
 import { db } from "../../firebase";
 import { useSelector } from "react-redux";
 import { Link } from "react-router-dom";
+import Loader from "react-loader-spinner";
 
 const ChatList = () => {
   const [chatRooms, setChatRooms] = useState([]);
@@ -26,10 +27,10 @@ const ChatList = () => {
   const [receiverChatRoomId, setReceiverChatRoomId] = useState("");
   const [senderChatRoomId, setSenderChatRoomId] = useState("");
   const [profileData, setProfileData] = useState("");
+  const [loading, setLoading] = useState(true);
 
   const userData = useSelector((state) => state.user.userData);
 
-  //ovo je za get soba i poruka
   useEffect(() => {
     const unsubscribe = onSnapshot(
       query(
@@ -42,19 +43,22 @@ const ChatList = () => {
           documentId: doc.id,
         }));
 
+        setChatRooms(chatRooms);
         setChatRoomDocumentId(chatRooms[0]?.chatId);
         setProfileData(
           chatRooms[0]?.sender?.userId === userData?.userId
             ? chatRooms[0]?.receiver
             : chatRooms[0]?.sender
         );
-        setChatRooms(chatRooms);
+        setMyChatRoomIdInProfile(chatRooms[0]?.documentId);
+        setReceiver(chatRooms[0]?.receiver);
+        setSender(chatRooms[0]?.sender);
+        setLoading(false);
       }
     );
     return unsubscribe;
   }, []);
 
-  //ovo je za get soba i poruka
   useEffect(() => {
     if (receiver) {
       const unsubscribe = onSnapshot(
@@ -93,7 +97,7 @@ const ChatList = () => {
       );
       return unsubscribe;
     }
-  }, [receiver]);
+  }, [sender]);
 
   useEffect(() => {
     if (chatRoomDocumentId) {
@@ -110,12 +114,13 @@ const ChatList = () => {
           setChat(results);
         }
       );
-
       return unsubscribe;
     }
   }, [chatRoomDocumentId]);
 
   const handleSend = async () => {
+    // console.log(chatRoomDocumentId);
+    // console.log(myChatRoomIdInProfile);
     try {
       setMessage("");
       await addDoc(collection(db, "chats", chatRoomDocumentId, "messages"), {
@@ -146,6 +151,25 @@ const ChatList = () => {
       console.log(error);
     }
   };
+
+  if (loading) {
+    return (
+      <div className="flex flex-col justify-center items-center min-h-screen">
+        <Loader />
+        <p className="mt-5 text-xl font-bold text-gray-900">
+          Fetching chats...
+        </p>
+      </div>
+    );
+  }
+
+  if (!chatRooms.length) {
+    return (
+      <div>
+        <h1 className="text-center">No chats...</h1>
+      </div>
+    );
+  }
 
   return (
     <div className="flex min-h-screen">
