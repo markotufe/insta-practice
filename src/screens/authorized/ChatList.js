@@ -23,16 +23,15 @@ const ChatList = () => {
   //ovo je za get soba i poruka
   useEffect(() => {
     const unsubscribe = onSnapshot(
-      query(collection(db, "users", userData?.documentId, "chats")),
+      query(
+        collection(db, "users", userData?.documentId, "chats"),
+        orderBy("timestamp", "desc")
+      ),
       async (snapshot) => {
         let chatRooms = snapshot.docs.map((doc) => ({
           ...doc.data(),
           documentId: doc.id,
         }));
-
-        chatRooms.sort(function (a, b) {
-          return new Date(b.timestamp) - new Date(a.timestamp);
-        });
 
         setChatRooms(chatRooms);
       }
@@ -79,7 +78,6 @@ const ChatList = () => {
               key={room?.documentId}
               className="mt-4 cursor-pointer"
               onClick={() => {
-                console.log(room);
                 setChatRoomDocumentId(room?.chatId);
                 setReceiver(room?.receiver);
               }}

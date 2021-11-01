@@ -81,6 +81,7 @@ export const ChatModal = ({ displayName, userFromUrl }) => {
           sender: { ...userData },
           receiver: { ...userFromUrl },
           chatId: chatRef?.id,
+          timestamp: Date.now(),
         });
 
         await addDoc(
@@ -89,6 +90,7 @@ export const ChatModal = ({ displayName, userFromUrl }) => {
             sender: { ...userData },
             receiver: { ...userFromUrl },
             chatId: chatRef?.id,
+            timestamp: Date.now(),
           }
         );
 
