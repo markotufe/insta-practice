@@ -13,6 +13,7 @@ import {
 } from "@firebase/firestore";
 import { db } from "../../firebase";
 import { useSelector } from "react-redux";
+import { Link } from "react-router-dom";
 
 const ChatList = () => {
   const [chatRooms, setChatRooms] = useState([]);
@@ -24,6 +25,7 @@ const ChatList = () => {
   const [myChatRoomIdInProfile, setMyChatRoomIdInProfile] = useState("");
   const [receiverChatRoomId, setReceiverChatRoomId] = useState("");
   const [senderChatRoomId, setSenderChatRoomId] = useState("");
+  const [profileData, setProfileData] = useState("");
 
   const userData = useSelector((state) => state.user.userData);
 
@@ -154,6 +156,11 @@ const ChatList = () => {
                 setReceiver(room?.receiver);
                 setSender(room?.sender);
                 setMyChatRoomIdInProfile(room?.documentId);
+                setProfileData(
+                  room?.sender?.userId === userData?.userId
+                    ? room?.receiver
+                    : room?.sender
+                );
               }}
             >
               <h1>
@@ -186,7 +193,28 @@ const ChatList = () => {
         />
         <button onClick={handleSend}>Send</button>
       </div>
-      <div className="bg-white w-[350px]">profil osobe</div>
+      <div className="bg-white w-[350px]">
+        {profileData && (
+          <div>
+            <img
+              src={
+                profileData?.photoURL ??
+                "https://i2.wp.com/www.stazeibogaze.info/wp-content/uploads/2016/08/default-placeholder.png?fit=1200%2C1200&w=640"
+              }
+              alt="user"
+              className="rounded-full h-16 w-16 object-contain p-1 mr-3 border"
+            />
+            <h1>{profileData?.fullName}</h1>
+            <p>{profileData?.displayName}</p>
+            <Link
+              to={`user/${profileData?.displayName}`}
+              className="text-blue-500 font-bold"
+            >
+              View profile
+            </Link>
+          </div>
+        )}
+      </div>
     </div>
   );
 };
