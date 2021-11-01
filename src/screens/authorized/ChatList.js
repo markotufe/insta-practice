@@ -161,9 +161,7 @@ const ChatList = () => {
         </p>
       </div>
     );
-  }
-
-  if (!chatRooms.length) {
+  } else if (!chatRooms.length) {
     return (
       <div>
         <h1 className="text-center">No chats...</h1>
