@@ -4,9 +4,11 @@ import { useEffect, useState } from "react";
 import {
   addDoc,
   collection,
+  doc,
   onSnapshot,
   orderBy,
   query,
+  updateDoc,
 } from "@firebase/firestore";
 import { db } from "../../firebase";
 import { useSelector } from "react-redux";
@@ -17,6 +19,7 @@ const ChatList = () => {
   const [chat, setChat] = useState([]);
   const [message, setMessage] = useState("");
   const [receiver, setReceiver] = useState("");
+  const [myChatRoomIdInProfile, setMyChatRoomIdInProfile] = useState("");
 
   const userData = useSelector((state) => state.user.userData);
 
@@ -60,12 +63,33 @@ const ChatList = () => {
   }, [chatRoomDocumentId]);
 
   const handleSend = async () => {
-    await addDoc(collection(db, "chats", chatRoomDocumentId, "messages"), {
-      text: message,
-      timestamp: Date.now(),
-      sentBy: userData?.userId,
-      to: receiver?.userId,
-    });
+    try {
+      setMessage("");
+      await addDoc(collection(db, "chats", chatRoomDocumentId, "messages"), {
+        text: message,
+        timestamp: Date.now(),
+        sentBy: userData?.userId,
+        to: receiver?.userId,
+      });
+
+      //moj chat document id
+      await updateDoc(
+        doc(db, "users", userData?.documentId, "chats", myChatRoomIdInProfile),
+        {
+          timestamp: Date.now(),
+        }
+      );
+
+      // //korisnikov chat dokument id
+      // await updateDoc(
+      //   doc(db, "users", receiver?.documentId, "chats", chatRoomDocumentId),
+      //   {
+      //     timestamp: Date.now(),
+      //   }
+      // );
+    } catch (error) {
+      console.log(error);
+    }
   };
 
   return (
@@ -73,6 +97,7 @@ const ChatList = () => {
       <div className="w-[300px] bg-white shadow-lg">
         <h1>lista osoba</h1>
         {chatRooms.map((room) => {
+          // console.log(room);
           return (
             <div
               key={room?.documentId}
@@ -80,6 +105,7 @@ const ChatList = () => {
               onClick={() => {
                 setChatRoomDocumentId(room?.chatId);
                 setReceiver(room?.receiver);
+                setMyChatRoomIdInProfile(room?.documentId);
               }}
             >
               <h1>
