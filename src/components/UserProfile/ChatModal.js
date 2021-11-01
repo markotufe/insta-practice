@@ -17,8 +17,9 @@ import {
 
 export const ChatModal = ({ displayName, userFromUrl }) => {
   const [message, setMessage] = useState("");
-  const [isMessageSentToUser, setIsMessageSentToUser] = useState(false);
-  const [isMessageSentFromUser, setIsMessageSentFromUser] = useState(false);
+  const [isFirstMessageSentToUser, setIsMessageSentToUser] = useState(false);
+  const [isFirstMessageSentFromUser, setIsMessageSentFromUser] =
+    useState(false);
   const [receiverChatDocumentId, setReceiverChatDocumentId] = useState("");
   const [senderChatDocumentId, setSenderChatDocumentId] = useState("");
   const [myChatDocumentId, setMyChatDocumentId] = useState("");
@@ -34,6 +35,7 @@ export const ChatModal = ({ displayName, userFromUrl }) => {
       ),
       (snapshot) => {
         if (snapshot.docs.length > 0) {
+          console.log(snapshot.docs[0].id);
           setReceiverChatDocumentId(snapshot.docs[0].id);
           setIsMessageSentToUser(snapshot.docs.length > 0);
         }
@@ -45,11 +47,12 @@ export const ChatModal = ({ displayName, userFromUrl }) => {
   useEffect(() => {
     const unsubscribe = onSnapshot(
       query(
-        collection(db, "users", userFromUrl?.documentId, "chats"),
+        collection(db, "users", userData?.documentId, "chats"),
         where("sentBy", "==", userFromUrl?.userId)
       ),
       (snapshot) => {
         if (snapshot.docs.length > 0) {
+          console.log(snapshot.docs[0].id);
           setSenderChatDocumentId(snapshot.docs[0].id);
           setIsMessageSentFromUser(snapshot.docs.length > 0);
         }
@@ -59,7 +62,7 @@ export const ChatModal = ({ displayName, userFromUrl }) => {
   }, []);
 
   useEffect(() => {
-    if (isMessageSentToUser) {
+    if (isFirstMessageSentToUser) {
       const getMyChatDocumentId = async () => {
         const collectionRef = collection(
           db,
@@ -91,17 +94,38 @@ export const ChatModal = ({ displayName, userFromUrl }) => {
         const snapshot = await getDocs(q);
 
         if (snapshot.docs.length > 0) {
+          console.log(snapshot.docs[0].id);
           setMyChatDocumentId(snapshot.docs[0].id);
         }
       };
+      const getSenderChatDocumentId = async () => {
+        const collectionRef = collection(
+          db,
+          "users",
+          userFromUrl?.documentId,
+          "chats"
+        );
+        const q = query(
+          collectionRef,
+          where("sentBy", "==", userFromUrl?.userId)
+        );
+        const snapshot = await getDocs(q);
+
+        if (snapshot.docs.length > 0) {
+          console.log(snapshot.docs[0].id);
+          setSenderChatDocumentId(snapshot.docs[0].id);
+        }
+      };
+      getSenderChatDocumentId();
       getMyChatDocumentId();
     }
-  }, [isMessageSentToUser]);
+  }, [isFirstMessageSentToUser]);
 
   const handleSendMessage = async (e) => {
     e.preventDefault();
 
-    if (!isMessageSentToUser && !isMessageSentFromUser) {
+    if (!isFirstMessageSentToUser && !isFirstMessageSentFromUser) {
+      console.log("prvo");
       try {
         const chatRomRefActiveUser = await addDoc(
           collection(db, "users", userData?.documentId, "chats"),
@@ -159,7 +183,8 @@ export const ChatModal = ({ displayName, userFromUrl }) => {
       } catch (error) {
         console.log(error);
       }
-    } else if (isMessageSentToUser && !isMessageSentFromUser) {
+    } else if (isFirstMessageSentToUser && !isFirstMessageSentFromUser) {
+      console.log("drugo");
       try {
         await addDoc(
           collection(
@@ -198,6 +223,9 @@ export const ChatModal = ({ displayName, userFromUrl }) => {
         console.log(error);
       }
     } else {
+      console.log("trece");
+      console.log(myChatDocumentId);
+      console.log(senderChatDocumentId);
       try {
         await addDoc(
           collection(
@@ -237,6 +265,9 @@ export const ChatModal = ({ displayName, userFromUrl }) => {
       }
     }
   };
+
+  console.log("to", isFirstMessageSentToUser);
+  console.log("from", isFirstMessageSentFromUser);
 
   return (
     <Modal
