@@ -42,6 +42,12 @@ const ChatList = () => {
           documentId: doc.id,
         }));
 
+        setChatRoomDocumentId(chatRooms[0]?.chatId);
+        setProfileData(
+          chatRooms[0]?.sender?.userId === userData?.userId
+            ? chatRooms[0]?.receiver
+            : chatRooms[0]?.sender
+        );
         setChatRooms(chatRooms);
       }
     );
