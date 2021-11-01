@@ -2,9 +2,7 @@
 import { useEffect, useState } from "react";
 
 import {
-  addDoc,
   collection,
-  getDocs,
   onSnapshot,
   orderBy,
   query,
@@ -18,13 +16,6 @@ const ChatList = () => {
   const [chatRoomDocumentId, setChatRoomDocumentId] = useState("");
   const [chat, setChat] = useState([]);
   const [message, setMessage] = useState("");
-  const [isMessageSentToUser, setIsMessageSentToUser] = useState(false);
-  const [isMessageSentFromUser, setIsMessageSentFromUser] = useState(false);
-  const [receiverChatDocumentId, setReceiverChatDocumentId] = useState("");
-  const [senderChatDocumentId, setSenderChatDocumentId] = useState("");
-  const [myChatDocumentId, setMyChatDocumentId] = useState("");
-  const [receiver, setReceiver] = useState();
-  const [sender, setSender] = useState();
 
   const userData = useSelector((state) => state.user.userData);
 
@@ -32,8 +23,9 @@ const ChatList = () => {
   useEffect(() => {
     const unsubscribe = onSnapshot(
       query(
-        collection(db, "users", userData?.documentId, "chats"),
-        orderBy("timestamp", "desc")
+        collection(db, "chats"),
+        where("sentBy", "==", userData.userId)
+        // orderBy("timestamp", "desc")
       ),
       async (snapshot) => {
         const chatRooms = snapshot.docs.map((doc) => ({
@@ -51,14 +43,7 @@ const ChatList = () => {
     if (chatRoomDocumentId) {
       const unsubscribe = onSnapshot(
         query(
-          collection(
-            db,
-            "users",
-            userData?.documentId,
-            "chats",
-            chatRoomDocumentId,
-            "messages"
-          ),
+          collection(db, "chats", chatRoomDocumentId, "messages"),
           orderBy("timestamp", "asc")
         ),
         (snapshot) => {
@@ -74,179 +59,8 @@ const ChatList = () => {
     }
   }, [chatRoomDocumentId]);
 
-  //ovo je za send
-  useEffect(() => {
-    if (receiver) {
-      const unsubscribe = onSnapshot(
-        query(
-          collection(db, "users", receiver?.documentId, "chats"),
-          where("sentBy", "==", userData?.userId)
-        ),
-        (snapshot) => {
-          if (snapshot.docs.length > 0) {
-            setReceiverChatDocumentId(snapshot.docs[0].id);
-            setIsMessageSentToUser(snapshot.docs.length > 0);
-          }
-        }
-      );
-      return unsubscribe;
-    }
-  }, [receiver]);
-
-  useEffect(() => {
-    if (receiver) {
-      const unsubscribe = onSnapshot(
-        query(
-          collection(db, "users", receiver?.documentId, "chats"),
-          where("sentBy", "==", receiver?.userId)
-        ),
-        (snapshot) => {
-          if (snapshot.docs.length > 0) {
-            setSenderChatDocumentId(snapshot.docs[0].id);
-            setIsMessageSentFromUser(snapshot.docs.length > 0);
-          }
-        }
-      );
-      return unsubscribe;
-    }
-  }, [receiver]);
-
-  useEffect(() => {
-    if (sender) {
-      const unsubscribe = onSnapshot(
-        query(
-          collection(db, "users", sender?.documentId, "chats"),
-          where("sentBy", "==", sender?.userId)
-        ),
-        (snapshot) => {
-          if (snapshot.docs.length > 0) {
-            setSenderChatDocumentId(snapshot.docs[0].id);
-          }
-        }
-      );
-      return unsubscribe;
-    }
-  }, [sender]);
-
-  useEffect(() => {
-    if (isMessageSentToUser) {
-      const getMyChatDocumentId = async () => {
-        const collectionRef = collection(
-          db,
-          "users",
-          userData?.documentId,
-          "chats"
-        );
-        const q = query(collectionRef, where("sentBy", "==", userData?.userId));
-        const snapshot = await getDocs(q);
-
-        if (snapshot.docs.length > 0) {
-          setMyChatDocumentId(snapshot.docs[0].id);
-        }
-      };
-
-      getMyChatDocumentId();
-    } else {
-      if (sender) {
-        const getMyChatDocumentId = async () => {
-          const collectionRef = collection(
-            db,
-            "users",
-            userData?.documentId,
-            "chats"
-          );
-          const q = query(collectionRef, where("sentBy", "==", sender?.userId));
-          const snapshot = await getDocs(q);
-
-          if (snapshot.docs.length > 0) {
-            setMyChatDocumentId(snapshot.docs[0].id);
-          }
-        };
-        getMyChatDocumentId();
-      }
-    }
-  }, [isMessageSentToUser, sender]);
-
-  const handleSend = async (e) => {
-    e.preventDefault();
-
-    if (isMessageSentToUser && !isMessageSentFromUser) {
-      try {
-        setMessage("");
-
-        await addDoc(
-          collection(
-            db,
-            "users",
-            userData?.documentId,
-            "chats",
-            myChatDocumentId,
-            "messages"
-          ),
-          {
-            text: message,
-            timestamp: Date.now(),
-            sentBy: userData?.userId,
-          }
-        );
-
-        await addDoc(
-          collection(
-            db,
-            "users",
-            receiver?.documentId,
-            "chats",
-            receiverChatDocumentId,
-            "messages"
-          ),
-          {
-            text: message,
-            timestamp: Date.now(),
-            sentBy: userData?.userId,
-          }
-        );
-      } catch (error) {
-        console.log(error);
-      }
-    } else {
-      try {
-        setMessage("");
-
-        await addDoc(
-          collection(
-            db,
-            "users",
-            userData?.documentId,
-            "chats",
-            myChatDocumentId,
-            "messages"
-          ),
-          {
-            text: message,
-            timestamp: Date.now(),
-            sentBy: userData?.userId,
-          }
-        );
-
-        await addDoc(
-          collection(
-            db,
-            "users",
-            sender?.documentId,
-            "chats",
-            senderChatDocumentId,
-            "messages"
-          ),
-          {
-            text: message,
-            timestamp: Date.now(),
-            sentBy: userData?.userId,
-          }
-        );
-      } catch (error) {
-        console.log(error);
-      }
-    }
+  const handleSend = () => {
+    console.log("send");
   };
 
   return (
@@ -260,8 +74,6 @@ const ChatList = () => {
               className="mt-4 cursor-pointer"
               onClick={() => {
                 setChatRoomDocumentId(room?.documentId);
-                setReceiver(room?.receiver);
-                setSender(room?.sender);
               }}
             >
               <h1>
@@ -282,14 +94,7 @@ const ChatList = () => {
                 message.sentBy === userData?.userId ? "text-right" : "text-left"
               }
             >
-              {message?.text}{" "}
-              {message.sentBy === userData?.userId
-                ? "sent by me"
-                : `sent by ${
-                    sender?.displayName === userData?.displayName
-                      ? receiver?.displayName
-                      : sender?.displayName
-                  }`}{" "}
+              {message?.text}
             </div>
           );
         })}
