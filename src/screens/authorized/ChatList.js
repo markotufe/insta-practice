@@ -20,8 +20,10 @@ const ChatList = () => {
   const [chat, setChat] = useState([]);
   const [message, setMessage] = useState("");
   const [receiver, setReceiver] = useState("");
+  const [sender, setSender] = useState("");
   const [myChatRoomIdInProfile, setMyChatRoomIdInProfile] = useState("");
   const [receiverChatRoomId, setReceiverChatRoomId] = useState("");
+  const [senderChatRoomId, setSenderChatRoomId] = useState("");
 
   const userData = useSelector((state) => state.user.userData);
 
@@ -59,6 +61,26 @@ const ChatList = () => {
           }));
 
           setReceiverChatRoomId(chatRooms[0]?.documentId);
+        }
+      );
+      return unsubscribe;
+    }
+  }, [receiver]);
+
+  useEffect(() => {
+    if (sender) {
+      const unsubscribe = onSnapshot(
+        query(
+          collection(db, "users", sender?.documentId, "chats"),
+          where("chatId", "==", chatRoomDocumentId)
+        ),
+        async (snapshot) => {
+          let chatRooms = snapshot.docs.map((doc) => ({
+            ...doc.data(),
+            documentId: doc.id,
+          }));
+
+          setSenderChatRoomId(chatRooms[0]?.documentId);
         }
       );
       return unsubscribe;
@@ -105,7 +127,9 @@ const ChatList = () => {
 
       //korisnikov chat dokument id
       await updateDoc(
-        doc(db, "users", receiver?.documentId, "chats", receiverChatRoomId),
+        sender?.userId === userData?.userId
+          ? doc(db, "users", receiver?.documentId, "chats", receiverChatRoomId)
+          : doc(db, "users", sender?.documentId, "chats", senderChatRoomId),
         {
           timestamp: Date.now(),
         }
@@ -128,6 +152,7 @@ const ChatList = () => {
               onClick={() => {
                 setChatRoomDocumentId(room?.chatId);
                 setReceiver(room?.receiver);
+                setSender(room?.sender);
                 setMyChatRoomIdInProfile(room?.documentId);
               }}
             >
