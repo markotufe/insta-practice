@@ -2,11 +2,11 @@
 import { useEffect, useState } from "react";
 
 import {
+  addDoc,
   collection,
   onSnapshot,
   orderBy,
   query,
-  where,
 } from "@firebase/firestore";
 import { db } from "../../firebase";
 import { useSelector } from "react-redux";
@@ -16,18 +16,23 @@ const ChatList = () => {
   const [chatRoomDocumentId, setChatRoomDocumentId] = useState("");
   const [chat, setChat] = useState([]);
   const [message, setMessage] = useState("");
+  const [receiver, setReceiver] = useState("");
 
   const userData = useSelector((state) => state.user.userData);
 
   //ovo je za get soba i poruka
   useEffect(() => {
     const unsubscribe = onSnapshot(
-      query(collection(db, "chats"), where("uniqeId", ">=", userData.userId)),
+      query(collection(db, "users", userData?.documentId, "chats")),
       async (snapshot) => {
-        const chatRooms = snapshot.docs.map((doc) => ({
+        let chatRooms = snapshot.docs.map((doc) => ({
           ...doc.data(),
           documentId: doc.id,
         }));
+
+        chatRooms.sort(function (a, b) {
+          return new Date(b.timestamp) - new Date(a.timestamp);
+        });
 
         setChatRooms(chatRooms);
       }
@@ -55,8 +60,13 @@ const ChatList = () => {
     }
   }, [chatRoomDocumentId]);
 
-  const handleSend = () => {
-    console.log("send");
+  const handleSend = async () => {
+    await addDoc(collection(db, "chats", chatRoomDocumentId, "messages"), {
+      text: message,
+      timestamp: Date.now(),
+      sentBy: userData?.userId,
+      to: receiver?.userId,
+    });
   };
 
   return (
@@ -69,7 +79,9 @@ const ChatList = () => {
               key={room?.documentId}
               className="mt-4 cursor-pointer"
               onClick={() => {
-                setChatRoomDocumentId(room?.documentId);
+                console.log(room);
+                setChatRoomDocumentId(room?.chatId);
+                setReceiver(room?.receiver);
               }}
             >
               <h1>
