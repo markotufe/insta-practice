@@ -22,11 +22,7 @@ const ChatList = () => {
   //ovo je za get soba i poruka
   useEffect(() => {
     const unsubscribe = onSnapshot(
-      query(
-        collection(db, "chats"),
-        where("sentBy", "==", userData.userId)
-        // orderBy("timestamp", "desc")
-      ),
+      query(collection(db, "chats"), where("uniqeId", ">=", userData.userId)),
       async (snapshot) => {
         const chatRooms = snapshot.docs.map((doc) => ({
           ...doc.data(),

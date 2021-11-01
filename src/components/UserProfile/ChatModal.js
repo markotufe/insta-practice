@@ -68,6 +68,10 @@ export const ChatModal = ({ displayName, userFromUrl }) => {
           sender: { ...userData },
           receiver: { ...userFromUrl },
           timestamp: Date.now(),
+          uniqeId:
+            userData?.userId > userFromUrl?.userId
+              ? `${userData?.userId + userFromUrl?.userId}`
+              : `${userFromUrl?.userId + userData?.userId}`,
         });
 
         await addDoc(collection(db, "chats", chatRef?.id, "messages"), {
@@ -75,6 +79,7 @@ export const ChatModal = ({ displayName, userFromUrl }) => {
           timestamp: Date.now(),
           sentBy: userData?.userId,
           to: userFromUrl?.userId,
+          chatRoomId: chatRef?.id,
         });
 
         dispatch(setIsChatModalOpen(false));
