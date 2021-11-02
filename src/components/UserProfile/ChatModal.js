@@ -22,6 +22,7 @@ export const ChatModal = ({ displayName, userFromUrl }) => {
   const [userFromUrlChatDocumentId, setUserFromUrlChatDocumentId] =
     useState("");
   const [activeUserChatDocumentId, setActiveUserChatDocumentId] = useState("");
+  const [isSendingMessage, setIsSendingMessage] = useState(false);
 
   const history = useHistory();
   const dispatch = useDispatch();
@@ -114,6 +115,7 @@ export const ChatModal = ({ displayName, userFromUrl }) => {
     e.preventDefault();
 
     if (chatId) {
+      setIsSendingMessage(true);
       try {
         await addDoc(collection(db, "chats", chatId, "messages"), {
           text: message,
@@ -153,10 +155,12 @@ export const ChatModal = ({ displayName, userFromUrl }) => {
         dispatch(setIsChatModalOpen(false));
         history.push("/chat");
       } catch (error) {
+        setIsSendingMessage(false);
         console.log(error);
       }
     } else {
       try {
+        setIsSendingMessage(true);
         const chatRef = await addDoc(collection(db, "chats"), {
           sentBy: userData?.userId,
           to: userFromUrl?.userId,
@@ -195,6 +199,7 @@ export const ChatModal = ({ displayName, userFromUrl }) => {
         dispatch(setIsChatModalOpen(false));
         history.push("/chat");
       } catch (error) {
+        setIsSendingMessage(false);
         console.log(error);
       }
     }
@@ -219,6 +224,7 @@ export const ChatModal = ({ displayName, userFromUrl }) => {
               className="border rounded-sm w-full resize-none min-h-[120px]"
             ></textarea>
             <button
+              disabled={isSendingMessage}
               type="submit"
               className="
               bg-blue-500
@@ -231,9 +237,10 @@ export const ChatModal = ({ displayName, userFromUrl }) => {
               ml-auto
               mt-3
               flex
+              disabled:cursor-not-allowed
               "
             >
-              Send message
+              {isSendingMessage ? "Sending message" : "Send message"}
             </button>
           </form>
         </div>
