@@ -172,14 +172,13 @@ const ChatList = () => {
 
   return (
     <div className="flex overflow-y-hidden max-h-[100vh]">
-      <div className="w-[300px] bg-white shadow-lg">
-        <h1>lista osoba</h1>
+      <div className="w-[300px] bg-white shadow-lg pt-8 px-4">
+        <h2 className="font-semibold text-xl mb-5 border-b pb-2">Chats</h2>
         {chatRooms.map((room) => {
-          // console.log(room);
           return (
             <div
               key={room?.documentId}
-              className="mt-4 cursor-pointer"
+              className="mt-4 cursor-pointer flex items-center"
               onClick={() => {
                 setChatRoomDocumentId(room?.chatId);
                 setReceiver(room?.receiver);
@@ -192,11 +191,28 @@ const ChatList = () => {
                 );
               }}
             >
-              <h1>
-                {room?.sender?.userId === userData?.userId
-                  ? room?.receiver?.fullName
-                  : room?.sender?.fullName}
-              </h1>
+              <img
+                src={
+                  (room?.sender?.userId === userData?.userId
+                    ? room?.receiver?.photoUrl
+                    : room?.sender?.photoUrl) ??
+                  "https://i2.wp.com/www.stazeibogaze.info/wp-content/uploads/2016/08/default-placeholder.png?fit=1200%2C1200&w=640"
+                }
+                alt="profile"
+                className="rounded-full border p-[2px] w-12 h-12"
+              />
+              <div className="ml-3">
+                <h1 className="font-semibold">
+                  {room?.sender?.userId === userData?.userId
+                    ? room?.receiver?.fullName
+                    : room?.sender?.fullName}
+                </h1>
+                <h2 className="text-gray-500 text-sm">
+                  {room?.sender?.userId === userData?.userId
+                    ? room?.receiver?.displayName
+                    : room?.sender?.displayName}
+                </h2>
+              </div>
             </div>
           );
         })}
