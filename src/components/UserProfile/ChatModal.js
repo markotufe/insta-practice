@@ -1,24 +1,31 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
+import { useHistory } from "react-router";
 import { setIsChatModalOpen } from "../../redux/slices/modalSlice";
 import { Modal } from "react-responsive-modal";
 import "react-responsive-modal/styles.css";
-
 import { db } from "../../firebase";
 import {
   addDoc,
   collection,
+  doc,
   onSnapshot,
   query,
+  updateDoc,
   where,
 } from "@firebase/firestore";
 
 export const ChatModal = ({ displayName, userFromUrl }) => {
   const [message, setMessage] = useState("");
   const [chatId, setChatId] = useState("");
+  const [userFromUrlChatDocumentId, setUserFromUrlChatDocumentId] =
+    useState("");
+  const [activeUserChatDocumentId, setActiveUserChatDocumentId] = useState("");
 
+  const history = useHistory();
   const dispatch = useDispatch();
+
   const isChatModalOpen = useSelector((state) => state.modal.isChatModalOpen);
   const userData = useSelector((state) => state.user.userData);
 
@@ -53,6 +60,7 @@ export const ChatModal = ({ displayName, userFromUrl }) => {
             ...doc.data(),
             documentId: doc.id,
           }));
+          setUserFromUrlChatDocumentId(results[0]?.documentId);
           setChatId(results[0]?.chatId);
         }
       }
@@ -60,17 +68,93 @@ export const ChatModal = ({ displayName, userFromUrl }) => {
     return unsubscribe;
   }, []);
 
+  useEffect(() => {
+    if (chatId) {
+      const unsubscribe = onSnapshot(
+        query(
+          collection(db, "users", userData?.documentId, "chats"),
+          where("chatId", "==", chatId)
+        ),
+        async (snapshot) => {
+          if (snapshot.docs.length > 0) {
+            let results = snapshot.docs.map((doc) => ({
+              ...doc.data(),
+              documentId: doc.id,
+            }));
+            setActiveUserChatDocumentId(results[0]?.documentId);
+          }
+        }
+      );
+      return unsubscribe;
+    }
+  }, [chatId]);
+
+  useEffect(() => {
+    if (chatId) {
+      const unsubscribe = onSnapshot(
+        query(
+          collection(db, "users", userFromUrl?.documentId, "chats"),
+          where("chatId", "==", chatId)
+        ),
+        async (snapshot) => {
+          if (snapshot.docs.length > 0) {
+            let results = snapshot.docs.map((doc) => ({
+              ...doc.data(),
+              documentId: doc.id,
+            }));
+            setUserFromUrlChatDocumentId(results[0]?.documentId);
+          }
+        }
+      );
+      return unsubscribe;
+    }
+  }, [chatId]);
+
   const handleSendMessage = async (e) => {
     e.preventDefault();
 
     if (chatId) {
-      await addDoc(collection(db, "chats", chatId, "messages"), {
-        text: message,
-        timestamp: Date.now(),
-        sentBy: userData?.userId,
-        to: userFromUrl?.userId,
-      });
-      dispatch(setIsChatModalOpen(false));
+      try {
+        await addDoc(collection(db, "chats", chatId, "messages"), {
+          text: message,
+          timestamp: Date.now(),
+          sentBy: userData?.userId,
+          to: userFromUrl?.userId,
+        });
+
+        //moj chat document id
+        await updateDoc(
+          doc(
+            db,
+            "users",
+            userData?.documentId,
+            "chats",
+            activeUserChatDocumentId
+          ),
+          {
+            timestamp: Date.now(),
+          }
+        );
+
+        //korisnikov chat dokument id
+        await updateDoc(
+          doc(
+            db,
+            "users",
+            userFromUrl?.documentId,
+            "chats",
+            userFromUrlChatDocumentId
+          ),
+          {
+            timestamp: Date.now(),
+          }
+        );
+
+        dispatch(setIsChatModalOpen(false));
+        history.push("/chat");
+      } catch (error) {
+        console.log(error);
+      }
     } else {
       try {
         const chatRef = await addDoc(collection(db, "chats"), {
@@ -108,8 +192,8 @@ export const ChatModal = ({ displayName, userFromUrl }) => {
             to: userFromUrl?.userId,
           }
         );
-
         dispatch(setIsChatModalOpen(false));
+        history.push("/chat");
       } catch (error) {
         console.log(error);
       }
