@@ -10,10 +10,10 @@
     @apply h-7 hover:scale-125 cursor-pointer transition-all duration-150 ease-out;
   }
   .myMessage {
-    @apply bg-gray-100 my-2 rounded-md p-2 px-5 ml-auto w-[fit-content];
+    @apply bg-gray-100 my-2 rounded-md p-3 px-5 ml-auto w-[fit-content];
   }
   .userMessage {
-    @apply my-2 rounded-md p-2 mr-auto w-[fit-content] bg-[#1e2f46];
+    @apply my-2 rounded-md p-3 mr-auto w-[fit-content] bg-[#1e2f46];
   }
   .chatBg {
     @apply bg-[#fafafafa];
