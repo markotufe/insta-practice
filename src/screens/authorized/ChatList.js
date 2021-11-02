@@ -173,7 +173,7 @@ const ChatList = () => {
   return (
     <div className="flex overflow-y-hidden max-h-[100vh]">
       <div className="w-[300px] bg-white shadow-lg pt-8 px-4">
-        <h2 className="font-semibold text-xl mb-5 border-b pb-2">Chats</h2>
+        <h2 className="font-bold text-2xl mb-5 border-b pb-2">Chats</h2>
         {chatRooms.map((room) => {
           return (
             <div
