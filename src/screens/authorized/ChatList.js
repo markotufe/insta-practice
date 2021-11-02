@@ -260,7 +260,9 @@ const ChatList = () => {
                     : room?.sender?.fullName}
                 </h1>
                 <h2 className="text-gray-500 text-sm">
-                  {lastMsg?.text}{" "}
+                  {lastMsg?.text?.length > 20
+                    ? `${lastMsg?.text?.slice(0, 20)}...`
+                    : lastMsg?.text}{" "}
                   <Moment fromNow className="pr-5 text-xs italic">
                     {lastMsg?.timestamp}
                   </Moment>{" "}
