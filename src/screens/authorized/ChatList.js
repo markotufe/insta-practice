@@ -202,7 +202,7 @@ const ChatList = () => {
         })}
       </div>
       <div className="flex-1 px-5 chatBg flex flex-col h-[90vh]">
-        <div className="flex-1 overflow-y-scroll scrollbar-thumb-black scrollbar-thin h-[100vh]">
+        <div className="flex-1 overflow-y-scroll h-[100vh]">
           {chat.map((message, index) => {
             return (
               <Chat
