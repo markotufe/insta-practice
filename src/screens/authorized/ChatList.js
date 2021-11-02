@@ -171,7 +171,7 @@ const ChatList = () => {
   }
 
   return (
-    <div className="flex" style={{ maxHeight: "100vh", overflowY: "hidden" }}>
+    <div className="flex overflow-y-hidden max-h-[100vh]">
       <div className="w-[300px] bg-white shadow-lg">
         <h1>lista osoba</h1>
         {chatRooms.map((room) => {
@@ -201,14 +201,8 @@ const ChatList = () => {
           );
         })}
       </div>
-      <div
-        className="flex-1 px-5 chatBg flex flex-col"
-        style={{ height: "90vh" }}
-      >
-        <div
-          className="flex-1"
-          style={{ height: "100vh", overflowY: "scroll" }}
-        >
+      <div className="flex-1 px-5 chatBg flex flex-col h-[90vh]">
+        <div className="flex-1 overflow-y-scroll scrollbar-thumb-black scrollbar-thin h-[100vh]">
           {chat.map((message, index) => {
             return (
               <Chat
