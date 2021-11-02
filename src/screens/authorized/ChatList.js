@@ -15,6 +15,7 @@ import { db } from "../../firebase";
 import { useSelector } from "react-redux";
 import { Link } from "react-router-dom";
 import Loader from "react-loader-spinner";
+import Chat from "../../components/Chat";
 
 const ChatList = () => {
   const [chatRooms, setChatRooms] = useState([]);
@@ -200,17 +201,14 @@ const ChatList = () => {
           );
         })}
       </div>
-      <div className="flex-1 px-5 chat-bg">
+      <div className="flex-1 px-5 chatBg">
         {chat.map((message, index) => {
           return (
-            <div
+            <Chat
               key={index}
-              className={
-                message.sentBy === userData?.userId ? "text-right" : "text-left"
-              }
-            >
-              {message?.text}
-            </div>
+              message={message}
+              activeUserId={userData?.userId}
+            />
           );
         })}
         <input

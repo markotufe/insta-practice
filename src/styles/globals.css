@@ -9,6 +9,15 @@
   .postBtn {
     @apply h-7 hover:scale-125 cursor-pointer transition-all duration-150 ease-out;
   }
+  .myMessage {
+    @apply bg-gray-100 my-2 rounded-md p-2 px-5 ml-auto w-[fit-content];
+  }
+  .userMessage {
+    @apply my-2 rounded-md p-2 mr-auto w-[fit-content] bg-[#1e2f46];
+  }
+  .chatBg {
+    @apply bg-[#fafafafa];
+  }
 }
 
 .react-responsive-modal-modal {
@@ -16,8 +25,4 @@
   border-radius: 5px;
   margin: 0 !important;
   padding: 0 !important;
-}
-
-.chat-bg {
-  background-color: #fafafafa;
 }
