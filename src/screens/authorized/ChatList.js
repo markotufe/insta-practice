@@ -203,7 +203,7 @@ const ChatList = () => {
       </div>
       <div
         className="flex-1 px-5 chatBg flex flex-col"
-        style={{ height: "90vh", overflowY: "scroll" }}
+        style={{ height: "90vh" }}
       >
         <div
           className="flex-1"
