@@ -155,7 +155,7 @@ const ChatList = () => {
 
   if (loading) {
     return (
-      <div className="flex flex-col justify-center items-center min-h-screen">
+      <div className="flex flex-col justify-center items-center h-full">
         <Loader />
         <p className="mt-5 text-xl font-bold text-gray-900">
           Fetching chats...
@@ -171,7 +171,7 @@ const ChatList = () => {
   }
 
   return (
-    <div className="flex min-h-screen">
+    <div className="flex" style={{ maxHeight: "100vh", overflowY: "hidden" }}>
       <div className="w-[300px] bg-white shadow-lg">
         <h1>lista osoba</h1>
         {chatRooms.map((room) => {
@@ -201,23 +201,38 @@ const ChatList = () => {
           );
         })}
       </div>
-      <div className="flex-1 px-5 chatBg">
-        {chat.map((message, index) => {
-          return (
-            <Chat
-              key={index}
-              message={message}
-              activeUserId={userData?.userId}
-            />
-          );
-        })}
-        <input
-          placeholder="Enter message"
-          className="mt-4 w-full py-4 pl-2"
-          value={message}
-          onChange={(e) => setMessage(e.target.value)}
-        />
-        <button onClick={handleSend}>Send</button>
+      <div
+        className="flex-1 px-5 chatBg flex flex-col"
+        style={{ height: "90vh", overflowY: "scroll" }}
+      >
+        <div
+          className="flex-1"
+          style={{ height: "100vh", overflowY: "scroll" }}
+        >
+          {chat.map((message, index) => {
+            return (
+              <Chat
+                key={index}
+                message={message}
+                activeUserId={userData?.userId}
+              />
+            );
+          })}
+        </div>
+        <div className="flex items-center mb-5">
+          <input
+            placeholder="Enter message"
+            className="mt-4 w-full py-4 pl-2"
+            value={message}
+            onChange={(e) => setMessage(e.target.value)}
+          />
+          <button
+            className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-4 px-4 rounded mt-4"
+            onClick={handleSend}
+          >
+            Send
+          </button>
+        </div>
       </div>
       <div className="bg-white w-[350px]">
         {profileData && (
