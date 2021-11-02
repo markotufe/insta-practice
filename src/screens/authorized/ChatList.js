@@ -8,6 +8,7 @@ import {
   onSnapshot,
   orderBy,
   query,
+  setDoc,
   updateDoc,
   where,
 } from "@firebase/firestore";
@@ -16,6 +17,7 @@ import { useSelector } from "react-redux";
 import Loader from "react-loader-spinner";
 import Chat from "../../components/Chat";
 import ChatProfileData from "../../components/ChatProfileData";
+import Moment from "react-moment";
 
 const ChatList = () => {
   const [chatRooms, setChatRooms] = useState([]);
@@ -29,6 +31,8 @@ const ChatList = () => {
   const [senderChatRoomId, setSenderChatRoomId] = useState("");
   const [profileData, setProfileData] = useState("");
   const [loading, setLoading] = useState(true);
+  const [lastMessage, setLastMessage] = useState([]);
+  const [lastMessageDocumentId, setLastMessageDocumentId] = useState([]);
 
   const userData = useSelector((state) => state.user.userData);
 
@@ -45,6 +49,7 @@ const ChatList = () => {
         }));
 
         setChatRooms(chatRooms);
+
         setChatRoomDocumentId(chatRooms[0]?.chatId);
         setProfileData(
           chatRooms[0]?.sender?.userId === userData?.userId
@@ -119,6 +124,44 @@ const ChatList = () => {
     }
   }, [chatRoomDocumentId]);
 
+  useEffect(() => {
+    const unsubscribe = onSnapshot(
+      query(collection(db, "lastMessage")),
+      async (snapshot) => {
+        if (snapshot.docs.length > 0) {
+          let results = snapshot.docs.map((doc) => ({
+            ...doc.data(),
+            documentId: doc.id,
+          }));
+          setLastMessage(results);
+        }
+      }
+    );
+    return unsubscribe;
+  }, []);
+
+  useEffect(() => {
+    if (chatRoomDocumentId) {
+      const unsubscribe = onSnapshot(
+        query(
+          collection(db, "lastMessage"),
+          where("chatId", "==", chatRoomDocumentId)
+        ),
+        async (snapshot) => {
+          if (snapshot.docs.length > 0) {
+            let results = snapshot.docs.map((doc) => ({
+              ...doc.data(),
+              documentId: doc.id,
+            }));
+
+            setLastMessageDocumentId(results[0]?.documentId);
+          }
+        }
+      );
+      return unsubscribe;
+    }
+  }, [chatRoomDocumentId]);
+
   const handleSend = async () => {
     // console.log(chatRoomDocumentId);
     // console.log(myChatRoomIdInProfile);
@@ -148,6 +191,12 @@ const ChatList = () => {
           timestamp: Date.now(),
         }
       );
+
+      await setDoc(doc(db, "lastMessage", lastMessageDocumentId), {
+        chatId: chatRoomDocumentId,
+        text: message,
+        timestamp: Date.now(),
+      });
     } catch (error) {
       console.log(error);
     }
@@ -175,6 +224,9 @@ const ChatList = () => {
       <div className="w-[300px] bg-white shadow-lg pt-8 px-4">
         <h2 className="font-bold text-2xl mb-5 border-b pb-2">Chats</h2>
         {chatRooms.map((room) => {
+          const lastMsg = lastMessage?.find(
+            (message) => message?.chatId === room?.chatId
+          );
           return (
             <div
               key={room?.documentId}
@@ -208,9 +260,10 @@ const ChatList = () => {
                     : room?.sender?.fullName}
                 </h1>
                 <h2 className="text-gray-500 text-sm">
-                  {room?.sender?.userId === userData?.userId
-                    ? room?.receiver?.displayName
-                    : room?.sender?.displayName}
+                  {lastMsg?.text}{" "}
+                  <Moment fromNow className="pr-5 text-xs italic">
+                    {lastMsg?.timestamp}
+                  </Moment>{" "}
                 </h2>
               </div>
             </div>

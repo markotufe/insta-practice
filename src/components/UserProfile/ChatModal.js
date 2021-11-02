@@ -12,6 +12,7 @@ import {
   doc,
   onSnapshot,
   query,
+  setDoc,
   updateDoc,
   where,
 } from "@firebase/firestore";
@@ -23,6 +24,7 @@ export const ChatModal = ({ displayName, userFromUrl }) => {
     useState("");
   const [activeUserChatDocumentId, setActiveUserChatDocumentId] = useState("");
   const [isSendingMessage, setIsSendingMessage] = useState(false);
+  const [lastMessageDocumentId, setLastMessageDocumentId] = useState([]);
 
   const history = useHistory();
   const dispatch = useDispatch();
@@ -111,6 +113,25 @@ export const ChatModal = ({ displayName, userFromUrl }) => {
     }
   }, [chatId]);
 
+  useEffect(() => {
+    if (chatId) {
+      const unsubscribe = onSnapshot(
+        query(collection(db, "lastMessage"), where("chatId", "==", chatId)),
+        async (snapshot) => {
+          if (snapshot.docs.length > 0) {
+            let results = snapshot.docs.map((doc) => ({
+              ...doc.data(),
+              documentId: doc.id,
+            }));
+
+            setLastMessageDocumentId(results[0]?.documentId);
+          }
+        }
+      );
+      return unsubscribe;
+    }
+  }, [chatId]);
+
   const handleSendMessage = async (e) => {
     e.preventDefault();
 
@@ -151,6 +172,12 @@ export const ChatModal = ({ displayName, userFromUrl }) => {
             timestamp: Date.now(),
           }
         );
+
+        await setDoc(doc(db, "lastMessage", lastMessageDocumentId), {
+          chatId: chatId,
+          timestamp: Date.now(),
+          text: message,
+        });
 
         dispatch(setIsChatModalOpen(false));
         history.push("/chat");
@@ -196,6 +223,17 @@ export const ChatModal = ({ displayName, userFromUrl }) => {
             to: userFromUrl?.userId,
           }
         );
+
+        await addDoc(collection(db, "lastMessage"), {
+          sender: { ...userData },
+          receiver: { ...userFromUrl },
+          chatId: chatRef?.id,
+          timestamp: Date.now(),
+          sentBy: userData?.userId,
+          to: userFromUrl?.userId,
+          text: message,
+        });
+
         dispatch(setIsChatModalOpen(false));
         history.push("/chat");
       } catch (error) {
