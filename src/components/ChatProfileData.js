@@ -20,7 +20,7 @@ const ChatProfileData = ({ profileData }) => {
         </h2>
       </div>
       <Link
-        to={`profile/${profileData?.displayName}`}
+        to={`/user/${profileData?.displayName}`}
         type="submit"
         className="bg-blue-500 hover:bg-blue-200 text-white font-bold py-2 px-4 rounded mt-5 text-center"
       >
